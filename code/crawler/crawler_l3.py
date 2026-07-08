@@ -12,13 +12,11 @@ from playwright.async_api import async_playwright
 from config import DB
 from config import L3_VIDEOS_PER_CHANNEL as VIDEOS_PER_CHANNEL
 from config import L3_MAX_SCROLLS as MAX_SCROLLS
-
+from config import L3_COMMENT_LIMIT as COMMENT_LIMIT
 # 테스트용 설정: 먼저 2~3개 채널만 돌려서 팬 추적 로직을 검증하세요.
 # 전체 33개 채널을 실전으로 수집하려면 이 값을 None으로 변경하세요.
 TEST_CHANNELS = None      
 
-VIDEOS_PER_CHANNEL = 15
-MAX_SCROLLS = 20
 
 # ==========================================
 # 유틸리티 함수
@@ -75,27 +73,31 @@ async def scrape_comments(page, video_id):
     await page.goto(f"https://www.youtube.com/watch?v={video_id}&hl=ko&gl=KR")
     
     # [핵심 최적화 2] 대기 시간 소폭 단축 (안전성 유지 선에서 타협)
-    await page.wait_for_timeout(2000) 
+    await page.wait_for_timeout(800) 
     try:
         await page.click("button[aria-label*='모두 수락']", timeout=2000)
     except Exception:
         pass
     
     await page.evaluate("window.scrollTo(0, 600)")
-    await page.wait_for_timeout(1500)
+    await page.wait_for_timeout(800)
 
     comments = {}
     last, stable = -1, 0
     for i in range(MAX_SCROLLS):
         await page.evaluate("window.scrollBy(0, 800)")
-        await page.wait_for_timeout(1500) # 기존 1800 -> 1500으로 단축
+        await page.wait_for_timeout(800) # 기존 1800 -> 1500으로 단축
         
         for data in seen:
             for pl in find_payloads(data):
                 cid = pl.get("properties", {}).get("commentId", "")
                 if cid:
                     comments[cid] = pl
-                    
+
+        # 댓글 상한 도달 → 중단
+        if len(comments) >= COMMENT_LIMIT:
+            break
+
         if len(comments) == last and len(comments) > 0:
             stable += 1
             if stable >= 3:
