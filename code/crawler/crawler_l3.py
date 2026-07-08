@@ -13,6 +13,7 @@ from config import DB
 from config import L3_VIDEOS_PER_CHANNEL as VIDEOS_PER_CHANNEL
 from config import L3_MAX_SCROLLS as MAX_SCROLLS
 from config import L3_COMMENT_LIMIT as COMMENT_LIMIT
+from config import L3_WORKERS
 # 테스트용 설정: 먼저 2~3개 채널만 돌려서 팬 추적 로직을 검증하세요.
 # 전체 33개 채널을 실전으로 수집하려면 이 값을 None으로 변경하세요.
 TEST_CHANNELS = None      
@@ -160,105 +161,107 @@ def save_comments(conn, content_id, payloads):
 # ==========================================
 # 메인 실행부
 # ==========================================
-async def main(channel_id=None):
-    conn = pymysql.connect(**DB, autocommit=True)
-
-    with conn.cursor() as cur:
-        # Resume 기능 최적화: crawl_logs를 기준으로 타겟 채널 선정
-        sql = """
-        SELECT
-            ch.channel_id,
-            cr.nickname,
-            ch.channel_url_normalized
-        FROM channels ch
-        JOIN creators cr
-            ON ch.creator_id = cr.creator_id
-        WHERE ch.platform='youtube'
-        """
-
-        params = []
-
-        if channel_id is None:
-            sql += """
-            AND ch.channel_id NOT IN (
-                SELECT channel_id
-                FROM crawl_logs
-                WHERE channel_id IS NOT NULL
-                AND layer='L3'
-                AND status='success'
-            )
-            """
-        else:
-            sql += " AND ch.channel_id=%s"
-            params.append(channel_id)
-            
-        if TEST_CHANNELS is None:
-            cur.execute(sql, params)
-        else:
-            cur.execute(sql + " LIMIT %s", params + [TEST_CHANNELS])
-
-        channels = cur.fetchall()
-
-    mode = "테스트 모드" if TEST_CHANNELS else "전체 실행 모드"
-    print(f"[{mode}] 수집 대상 남은 채널: {len(channels)}개")
-
-    async with async_playwright() as p:
-
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
-        
-        # 브라우저 전역에 리소스 차단 로직 적용
-        await page.route("**/*", block_resources)
-
-        for channel_id, nickname, channel_url in channels:
-
+# ==========================================
+# 채널 1개 처리 (병렬 워커)
+# ==========================================
+async def process_channel(browser, sem, channel_id, nickname, channel_url):
+    """채널 하나를 독립 컨텍스트 + 독립 DB 커넥션으로 처리."""
+    async with sem:  # 동시 실행 수 제한
+        # 채널마다 독립 DB 커넥션 (공유하면 병렬에서 충돌)
+        conn = pymysql.connect(**DB, autocommit=True)
+        try:
             with conn.cursor() as cur:
                 cur.execute("""
-                    SELECT
-                        content_id,
-                        external_id
+                    SELECT content_id, external_id
                     FROM contents
-                    WHERE channel_id=%s
-                      AND content_type='video'
+                    WHERE channel_id=%s AND content_type='video'
                     ORDER BY published_at DESC
                     LIMIT %s
                 """, (channel_id, VIDEOS_PER_CHANNEL))
-
                 videos = cur.fetchall()
 
-            print(f"\n=== {nickname} (ch={channel_id}) 영상 {len(videos)}개 시작 ===")
+            # 채널마다 독립 컨텍스트 + 페이지 (브라우저는 공유, 컨텍스트는 분리)
+            context = await browser.new_context()
+            page = await context.new_page()
+            await page.route("**/*", block_resources)
 
+            print(f"\n=== {nickname} (ch={channel_id}) 영상 {len(videos)}개 시작 ===")
             ch_comments = 0
 
             for content_id, video_id in videos:
-                # [오류 방어 코드 추가] 특정 영상 타임아웃 시 건너뛰기
                 try:
                     payloads = await scrape_comments(page, video_id)
                     n = save_comments(conn, content_id, payloads)
                     ch_comments += n
-                    print(f"  {video_id}: 댓글 {n}개 수집")
+                    print(f"  [{nickname}] {video_id}: 댓글 {n}개")
                 except Exception as e:
-                    print(f"  [타임아웃/에러] {video_id} 건너뜀 (오류: {e})")
-                    # 페이지가 먹통이 되는 것을 방지하기 위해 빈 페이지로 리셋
+                    print(f"  [{nickname}][에러] {video_id} 건너뜀: {e}")
                     try:
                         await page.goto("about:blank")
                     except:
                         pass
 
-            # 에러 해결: crawl_logs INSERT 시 target_url 무조건 저장
+            await context.close()  # 컨텍스트 닫아 메모리 회수
+
+            # crawl_logs 기록
             with conn.cursor() as cur:
-                safe_target_url = channel_url if channel_url else f"https://www.youtube.com/channel/{channel_id}"
+                safe_url = channel_url or f"https://www.youtube.com/channel/{channel_id}"
                 cur.execute("""
                     INSERT INTO crawl_logs
                     (channel_id, target_url, layer, status, http_status)
                     VALUES (%s, %s, 'L3', 'success', 200)
-                """, (channel_id, safe_target_url))
+                """, (channel_id, safe_url))
 
-            print(f"  → [완료] {nickname} 총 {ch_comments}개 댓글 수집 및 로그 기록 성공")
+            print(f"  → [완료] {nickname} 총 {ch_comments}개 댓글")
+        finally:
+            conn.close()
 
+
+# ==========================================
+# 메인 실행부 (병렬)
+# ==========================================
+async def main(channel_id=None):
+    conn = pymysql.connect(**DB, autocommit=True)
+    with conn.cursor() as cur:
+        sql = """
+        SELECT ch.channel_id, cr.nickname, ch.channel_url_normalized
+        FROM channels ch
+        JOIN creators cr ON ch.creator_id = cr.creator_id
+        WHERE ch.platform='youtube'
+        """
+        params = []
+        if channel_id is None:
+            sql += """
+            AND ch.channel_id NOT IN (
+                SELECT channel_id FROM crawl_logs
+                WHERE channel_id IS NOT NULL AND layer='L3' AND status='success'
+            )
+            """
+        else:
+            sql += " AND ch.channel_id=%s"
+            params.append(channel_id)
+
+        if TEST_CHANNELS is None:
+            cur.execute(sql, params)
+        else:
+            cur.execute(sql + " LIMIT %s", params + [TEST_CHANNELS])
+        channels = cur.fetchall()
+    conn.close()
+
+    mode = "테스트 모드" if TEST_CHANNELS else "전체 실행 모드"
+    print(f"[{mode}] 수집 대상 남은 채널: {len(channels)}개 (병렬 {L3_WORKERS}개)")
+
+    sem = asyncio.Semaphore(L3_WORKERS)
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        tasks = [
+            process_channel(browser, sem, ch_id, nick, url)
+            for ch_id, nick, url in channels
+        ]
+        await asyncio.gather(*tasks)
         await browser.close()
 
-    conn.close()
     print("\n모든 작업이 완료되었습니다.")
 
 if __name__ == "__main__":
