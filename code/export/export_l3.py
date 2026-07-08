@@ -1,3 +1,4 @@
+import os
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 import pandas as pd
@@ -6,7 +7,7 @@ import pymysql
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
-from config import DB
+from config import DB, EXPORT_DIR
 
 sql = """
 SELECT
@@ -69,7 +70,7 @@ df = pd.read_sql(sql, conn)
 
 conn.close()
 
-filename = "L3_댓글정보.xlsx"
+filename = os.path.join(EXPORT_DIR, "L3_댓글정보.xlsx")
 
 df.to_excel(
     filename,

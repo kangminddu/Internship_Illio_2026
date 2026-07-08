@@ -1,3 +1,4 @@
+import os
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 import pandas as pd
@@ -7,7 +8,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-from config import DB
+from config import DB, EXPORT_DIR
 
 sql = """
 SELECT
@@ -71,7 +72,7 @@ df = pd.read_sql(sql, conn)
 
 conn.close()
 
-filename = "L1_채널정보.xlsx"
+filename = os.path.join(EXPORT_DIR, "L1_채널정보.xlsx")
 
 df.to_excel(
     filename,

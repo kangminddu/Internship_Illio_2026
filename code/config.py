@@ -1,5 +1,9 @@
 # config.py
 
+import os
+EXPORT_DIR = "output"
+os.makedirs(EXPORT_DIR, exist_ok=True)
+
 DB = dict(host="127.0.0.1", port=3306, user="root", password="",
           database="fandom_crm", charset="utf8mb4")
 
