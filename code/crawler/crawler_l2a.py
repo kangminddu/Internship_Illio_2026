@@ -6,11 +6,7 @@ from datetime import datetime, timezone, timedelta
 
 from crawler.lib.youtube_parser import get_session, extract_yt_initial_data, parse_l2_videos
 
-DB = dict(host="127.0.0.1", port=3306, user="root", password="",
-          database="fandom_crm", charset="utf8mb4")
-
-WORKERS = 5
-DELAY = 0.3
+from config import DB, L2A_WORKERS, L2A_DELAY
 BATCH_LIMIT = None
 STOP_ON_429 = 5
 
@@ -135,7 +131,7 @@ def process_one(channel):
 
     with lock:
         counter["done"] += 1
-    time.sleep(DELAY)
+    time.sleep(L2A_DELAY)
 
 
 def main():
@@ -158,13 +154,13 @@ def main():
         channels = channels[:BATCH_LIMIT]
 
     total = len(channels)
-    print(f"L2a 대상 {total}개 | WORKERS={WORKERS}\n")
+    print(f"L2a 대상 {total}개 | WORKERS={L2A_WORKERS}\n")
     if total == 0:
         print("처리할 채널 없음.")
         return
 
     start = time.time()
-    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+    with ThreadPoolExecutor(max_workers=L2A_WORKERS) as ex:
         futures = [ex.submit(process_one, ch) for ch in channels]
         for f in as_completed(futures):
             if stop_flag.is_set():
