@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 import pymysql
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
