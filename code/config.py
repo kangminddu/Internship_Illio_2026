@@ -15,8 +15,8 @@ L2A_DELAY   = 0.3
 L2B_WORKERS = 10
 L2B_DELAY   = 0.3
 # ── L3 (Playwright, 무거움 → 살살) ──
-L3_WORKERS = 2      # 예시, 실제 값 확인 필요
-
+L3_VIDEOS_PER_CHANNEL = 15
+L3_MAX_SCROLLS = 20
 # ── 공통 ──
 BATCH_LIMIT = None
 STOP_ON_429 = 5

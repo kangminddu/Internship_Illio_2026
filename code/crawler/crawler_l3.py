@@ -8,8 +8,9 @@ from playwright.async_api import async_playwright
 # ==========================================
 # 환경 설정
 # ==========================================
-DB = dict(host="127.0.0.1", port=3306, user="root", password="",
-          database="fandom_crm", charset="utf8mb4")
+from config import DB
+from config import L3_VIDEOS_PER_CHANNEL as VIDEOS_PER_CHANNEL
+from config import L3_MAX_SCROLLS as MAX_SCROLLS
 
 # 테스트용 설정: 먼저 2~3개 채널만 돌려서 팬 추적 로직을 검증하세요.
 # 전체 33개 채널을 실전으로 수집하려면 이 값을 None으로 변경하세요.
