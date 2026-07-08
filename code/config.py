@@ -1,9 +1,22 @@
-# code/config.py
+# config.py
+
 DB = dict(host="127.0.0.1", port=3306, user="root", password="",
           database="fandom_crm", charset="utf8mb4")
 
-# L1 튜닝 (429 나면 WORKERS↓ DELAY↑)
-WORKERS     = 5
-DELAY       = 0.2
+# ── L1 (requests, 가벼움 → 병렬 세게 OK) ──
+L1_WORKERS = 5
+L1_DELAY   = 0.2
+
+# ── L2a (requests) ──
+L2A_WORKERS = 5
+L2A_DELAY   = 0.3
+
+# ── L2b (requests, watch page) ──
+L2B_WORKERS = 10
+
+# ── L3 (Playwright, 무거움 → 살살) ──
+L3_WORKERS = 2      # 예시, 실제 값 확인 필요
+
+# ── 공통 ──
 BATCH_LIMIT = None
 STOP_ON_429 = 5

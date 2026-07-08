@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from crawler.lib.youtube_parser import fetch_channel_l1
 
-from config import DB, WORKERS, DELAY, BATCH_LIMIT, STOP_ON_429
+from config import DB, L1_WORKERS, L1_DELAY, BATCH_LIMIT, STOP_ON_429
 
 lock = threading.Lock()
 counter = {"done": 0, "ok": 0, "fail": 0, "rate_limited": 0}
@@ -134,7 +134,7 @@ def process_one(channel):
     if d % 50 == 0:
         print(f"  [{d}] ok={counter['ok']} fail={counter['fail']} rl={counter['rate_limited']}")
 
-    time.sleep(DELAY)
+    time.sleep(L1_DELAY)
 
 
 def main():
@@ -159,13 +159,13 @@ def main():
         channels = channels[:BATCH_LIMIT]
 
     total = len(channels)
-    print(f"남은 채널 {total}개 | WORKERS={WORKERS} DELAY={DELAY}\n")
+    print(f"남은 채널 {total}개 | WORKERS={L1_WORKERS} DELAY={L1_DELAY}\n")
     if total == 0:
         print("처리할 채널 없음 (다 끝남).")
         return
 
     start = time.time()
-    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+    with ThreadPoolExecutor(max_workers=L1_WORKERS) as ex:
         futures = [ex.submit(process_one, ch) for ch in channels]
         for f in as_completed(futures):
             if stop_flag.is_set():
