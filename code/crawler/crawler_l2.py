@@ -10,11 +10,8 @@ from crawler.lib.youtube_parser import parse_watch_page
 # ==========================================
 # 환경 설정
 # ==========================================
-DB = dict(host="127.0.0.1", port=3306, user="root", password="",
-          database="fandom_crm", charset="utf8mb4")
+from config import DB, L2B_WORKERS, L2B_DELAY
 
-WORKERS = 10
-DELAY = 0.3
 RECENT_N = 15            # 채널당 최근 영상 15개
 BATCH_LIMIT = None       # 테스트 필요시 숫자 입력
 STOP_ON_429 = 5
@@ -84,7 +81,7 @@ def process_channel(channel):
                 else:
                     with lock:
                         counter["fail"] += 1
-                time.sleep(DELAY)
+                time.sleep(L2B_DELAY)
 
             # 성공 로그 기록
             cur.execute("""
@@ -118,9 +115,9 @@ def main():
         channels = channels[:BATCH_LIMIT]
 
     total = len(channels)
-    print(f"L2b 대상 채널 {total}개 | WORKERS={WORKERS}\n")
+    print(f"L2b 대상 채널 {total}개 | WORKERS={L2B_WORKERS}\n")
     
-    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+    with ThreadPoolExecutor(max_workers=L2B_WORKERS) as ex:
         futures = [ex.submit(process_channel, ch) for ch in channels]
         for f in as_completed(futures):
             if stop_flag.is_set(): break

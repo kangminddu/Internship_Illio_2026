@@ -13,7 +13,7 @@ L2A_DELAY   = 0.3
 
 # ── L2b (requests, watch page) ──
 L2B_WORKERS = 10
-
+L2B_DELAY   = 0.3
 # ── L3 (Playwright, 무거움 → 살살) ──
 L3_WORKERS = 2      # 예시, 실제 값 확인 필요
 
