@@ -70,7 +70,7 @@ df = pd.read_sql(sql, conn)
 
 conn.close()
 
-filename = os.path.join(EXPORT_DIR, "L3_댓글정보.xlsx")
+filename = os.path.join(EXPORT_DIR, "L3_댓글정보_포카챠.xlsx")
 
 df.to_excel(
     filename,

@@ -117,7 +117,7 @@ cols.insert(idx, "영상길이")
 
 df = df[cols]
 
-filename = os.path.join(EXPORT_DIR, "L2_영상정보.xlsx")
+filename = os.path.join(EXPORT_DIR, "L2_영상정보_포카챠.xlsx")
 
 df.to_excel(
     filename,
