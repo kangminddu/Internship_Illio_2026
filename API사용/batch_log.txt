@@ -1,0 +1,655 @@
+[2026-07-01 11:04:45] ===== 배치 시작 — 대상 1개 채널 =====
+[2026-07-01 11:04:45] --- (1/1) https://www.youtube.com/@gamst6217 ---
+[2026-07-01 11:05:06]     ✓ 성공 — 영상 87 · 댓글 8632 · 누적 쿼터 93/10000
+[2026-07-01 11:05:06] ----- 지표 재계산 -----
+[2026-07-01 11:05:06]     ✓ 지표 재계산 완료
+[2026-07-01 11:05:06] ===== 배치 종료 — 성공 1 · 실패 0 · 건너뜀 0 · 성공률 100.0% · 총 쿼터 93 =====
+
+[2026-07-01 11:10:42] ===== 배치 시작 — 대상 1개 채널 =====
+[2026-07-01 11:10:42] --- (1/1) https://www.youtube.com/@gamst6217 ---
+[2026-07-01 11:11:02]     ✓ 성공 — 영상 87 · 댓글 8632 · 누적 쿼터 93/10000
+[2026-07-01 11:11:02] ----- 지표 재계산 -----
+[2026-07-01 11:11:02]     ✓ 지표 재계산 완료
+[2026-07-01 11:11:02] ===== 배치 종료 — 성공 1 · 실패 0 · 건너뜀 0 · 성공률 100.0% · 총 쿼터 93 =====
+
+[2026-07-01 11:15:07] ===== 배치 시작 — 대상 1개 채널 =====
+[2026-07-01 11:15:07] --- (1/1) https://www.youtube.com/@gamst6217 ---
+[2026-07-01 11:15:27]     ✓ 성공 — 영상 87 · 댓글 8632 · 누적 쿼터 93/10000
+[2026-07-01 11:15:27] ----- 지표 재계산 -----
+[2026-07-01 11:15:28]     ✓ 지표 재계산 완료
+[2026-07-01 11:15:28] ===== 배치 종료 — 성공 1 · 실패 0 · 건너뜀 0 · 성공률 100.0% · 총 쿼터 93 =====
+
+[2026-07-01 11:23:55] ===== 배치 시작 — 대상 2개 채널 =====
+[2026-07-01 11:23:55] --- (1/2) https://www.youtube.com/@gamst6217 ---
+[2026-07-01 11:24:16]     ✓ 성공 — 영상 87 · 댓글 8632 · 누적 쿼터 93/10000
+[2026-07-01 11:24:16] --- (2/2) https://www.youtube.com/@moviethink ---
+[2026-07-01 11:25:02]     ✓ 성공 — 영상 123 · 댓글 10932 · 누적 쿼터 224/10000
+[2026-07-01 11:25:02] ----- 지표 재계산 -----
+[2026-07-01 11:25:02]     ✓ 지표 재계산 완료
+[2026-07-01 11:25:02] ===== 배치 종료 — 성공 2 · 실패 0 · 건너뜀 0 · 성공률 100.0% · 총 쿼터 224 =====
+
+[2026-07-02 10:57:11] ===== 배치 시작 — 대상 19개 채널 =====
+[2026-07-02 10:57:11] --- (1/19) https://www.youtube.com/channel/UChIak7iW6qc_-whDOybqIpw ---
+[2026-07-02 10:57:19]     ✓ 성공 — 영상 50 · 댓글 145 · 누적 쿼터 54/10000
+[2026-07-02 10:57:19] --- (2/19) https://www.youtube.com/channel/UCotAy56nD6uxya3opvX7IBg ---
+[2026-07-02 10:57:20]     ✓ 성공 — 영상 1 · 댓글 7 · 누적 쿼터 59/10000
+[2026-07-02 10:57:20] --- (3/19) https://www.youtube.com/channel/UC0BqJvnq0FZcBUKGQTGFFwg?sub_confirmation=1 ---
+[2026-07-02 10:57:20]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UU0BqJvnq0FZcBUKGQTGFFwg&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 10:57:20] --- (4/19) https://www.youtube.com/c/witching_tv ---
+[2026-07-02 10:57:20]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/c/witching_tv (커스텀 URL은 핸들로 변환 필요)
+[2026-07-02 10:57:20] --- (5/19) https://www.youtube.com/channel/UCrik9F226RS8SozMbo45ofQ?view_as=subscriber ---
+[2026-07-02 10:57:25]     ✓ 성공 — 영상 25 · 댓글 815 · 누적 쿼터 90/10000
+[2026-07-02 10:57:25] --- (6/19) https://www.youtube.com/channel/UCd1Q3-ZOi9rmtCJiGGJZ-ng?view_as=subscriber ---
+[2026-07-02 10:57:33]     ✓ 성공 — 영상 50 · 댓글 268 · 누적 쿼터 144/10000
+[2026-07-02 10:57:33] --- (7/19) https://www.youtube.com/channel/UCkkVe8okaSUNfBS5sxorrIQ?sub_confirmation=1 ---
+[2026-07-02 10:57:35]     ✓ 성공 — 영상 6 · 댓글 129 · 누적 쿼터 154/10000
+[2026-07-02 10:57:35] --- (8/19) https://www.youtube.com/channel/UCizAD_gtbKrE6Sgajer_Tvg ---
+[2026-07-02 10:57:35]     ✗ 실패 — ValueError: 채널 없음/비공개: UCizAD_gtbKrE6Sgajer_Tvg
+[2026-07-02 10:57:35] --- (9/19) https://www.youtube.com/channel/UCPsdKTSJmqP5pj9cIiKSNJw ---
+[2026-07-02 10:57:36]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUPsdKTSJmqP5pj9cIiKSNJw&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 10:57:36] --- (10/19) https://www.youtube.com/channel/UCGuurERkbPnHhEkTZOq_WDw?view_as=subscriber ---
+[2026-07-02 10:57:44]     ✓ 성공 — 영상 50 · 댓글 1133 · 누적 쿼터 211/10000
+[2026-07-02 10:57:44] --- (11/19) https://www.youtube.com/channel/UCGbspjBVI4zVVXQDrA0HrBg ---
+[2026-07-02 10:57:55]     ✓ 성공 — 영상 65 · 댓글 267 · 누적 쿼터 281/10000
+[2026-07-02 10:57:55] --- (12/19) https://www.youtube.com/channel/UCK-KsPKDFDN6AqM5IL1q2dw ---
+[2026-07-02 10:57:57]     ✓ 성공 — 영상 5 · 댓글 140 · 누적 쿼터 290/10000
+[2026-07-02 10:57:57] --- (13/19) https://www.youtube.com/channel/UCHzre37UF4o64HRhp-7CDzQ?view_as=subscriber ---
+[2026-07-02 10:58:01]     ✓ 성공 — 영상 22 · 댓글 1831 · 누적 쿼터 315/10000
+[2026-07-02 10:58:01] --- (14/19) https://www.youtube.com/user/ChaeHwaRyung ---
+[2026-07-02 10:58:05]     ✓ 성공 — 영상 21 · 댓글 36 · 누적 쿼터 340/10000
+[2026-07-02 10:58:05] --- (15/19) https://www.youtube.com/channel/UCc_nVsXbC8trjXLqcwmhiYg ---
+[2026-07-02 10:58:14]     ✓ 성공 — 영상 50 · 댓글 116 · 누적 쿼터 394/10000
+[2026-07-02 10:58:14] --- (16/19) https://www.youtube.com/channel/UC1UecqDtqdiyxmUy9I-13Ug ---
+[2026-07-02 10:58:15]     ✓ 성공 — 영상 1 · 댓글 27 · 누적 쿼터 399/10000
+[2026-07-02 10:58:15] --- (17/19) https://www.youtube.com/@MaNyeo919 ---
+[2026-07-02 10:58:19]     ✓ 성공 — 영상 25 · 댓글 127 · 누적 쿼터 428/10000
+[2026-07-02 10:58:19] --- (18/19) https://www.youtube.com/channel/UChwgTbkzxm5kEkUTTY4b_xg?view_as=subscriber ---
+[2026-07-02 10:58:22]     ✓ 성공 — 영상 22 · 댓글 27 · 누적 쿼터 453/10000
+[2026-07-02 10:58:22] --- (19/19) https://www.youtube.com/channel/UC9a1MhaaUhq90C2yXOp_6kg?view_as=subscriber ---
+[2026-07-02 10:58:32]     ✓ 성공 — 영상 50 · 댓글 1391 · 누적 쿼터 507/10000
+[2026-07-02 10:58:32] ----- 지표 재계산 -----
+[2026-07-02 10:58:32]     ✓ 지표 재계산 완료
+[2026-07-02 10:58:32] ===== 배치 종료 — 성공 15 · 실패 4 · 건너뜀 0 · 성공률 78.9% · 총 쿼터 507 =====
+
+[2026-07-02 12:04:37] ===== 배치 시작 — 대상 70개 채널 =====
+[2026-07-02 12:04:37] --- (1/70) https://www.youtube.com/channel/UChIak7iW6qc_-whDOybqIpw ---
+[2026-07-02 12:04:44]     ✓ 성공 — 영상 50 · 댓글 145 · 누적 쿼터 54/10000
+[2026-07-02 12:04:44] --- (2/70) https://www.youtube.com/channel/UCotAy56nD6uxya3opvX7IBg ---
+[2026-07-02 12:04:45]     ✓ 성공 — 영상 1 · 댓글 7 · 누적 쿼터 59/10000
+[2026-07-02 12:04:45] --- (3/70) https://www.youtube.com/channel/UC0BqJvnq0FZcBUKGQTGFFwg?sub_confirmation=1 ---
+[2026-07-02 12:04:46]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UU0BqJvnq0FZcBUKGQTGFFwg&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:04:46] --- (4/70) https://www.youtube.com/channel/UCrik9F226RS8SozMbo45ofQ?view_as=subscriber ---
+[2026-07-02 12:04:50]     ✓ 성공 — 영상 25 · 댓글 815 · 누적 쿼터 90/10000
+[2026-07-02 12:04:50] --- (5/70) https://www.youtube.com/channel/UCd1Q3-ZOi9rmtCJiGGJZ-ng?view_as=subscriber ---
+[2026-07-02 12:04:57]     ✓ 성공 — 영상 50 · 댓글 268 · 누적 쿼터 144/10000
+[2026-07-02 12:04:57] --- (6/70) https://www.youtube.com/channel/UCkkVe8okaSUNfBS5sxorrIQ?sub_confirmation=1 ---
+[2026-07-02 12:04:59]     ✓ 성공 — 영상 6 · 댓글 129 · 누적 쿼터 154/10000
+[2026-07-02 12:04:59] --- (7/70) https://www.youtube.com/channel/UCizAD_gtbKrE6Sgajer_Lvg ---
+[2026-07-02 12:04:59]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUizAD_gtbKrE6Sgajer_Lvg&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:04:59] --- (8/70) https://www.youtube.com/channel/UCPsdKTSJmqP5pj9cIiKSNJw ---
+[2026-07-02 12:05:00]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUPsdKTSJmqP5pj9cIiKSNJw&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:05:00] --- (9/70) https://www.youtube.com/channel/UCGuurERkbPnHhEkTZOq_WDw?view_as=subscriber ---
+[2026-07-02 12:05:07]     ✓ 성공 — 영상 50 · 댓글 1133 · 누적 쿼터 212/10000
+[2026-07-02 12:05:07] --- (10/70) https://www.youtube.com/channel/UCGbspjBVI4zVVXQDrA0HrBg ---
+[2026-07-02 12:05:16]     ✓ 성공 — 영상 65 · 댓글 267 · 누적 쿼터 282/10000
+[2026-07-02 12:05:16] --- (11/70) https://www.youtube.com/channel/UCK-KsPKDFDN6AqM5IL1q2dw ---
+[2026-07-02 12:05:18]     ✓ 성공 — 영상 5 · 댓글 140 · 누적 쿼터 291/10000
+[2026-07-02 12:05:18] --- (12/70) https://www.youtube.com/channel/UCHzre37UF4o64HRhp-7CDzQ?view_as=subscriber ---
+[2026-07-02 12:05:22]     ✓ 성공 — 영상 22 · 댓글 1831 · 누적 쿼터 316/10000
+[2026-07-02 12:05:22] --- (13/70) https://www.youtube.com/user/ChaeHwaRyung ---
+[2026-07-02 12:05:25]     ✓ 성공 — 영상 21 · 댓글 36 · 누적 쿼터 341/10000
+[2026-07-02 12:05:25] --- (14/70) https://www.youtube.com/channel/UCc_nVsXbC8trjXLqcwmhiYg ---
+[2026-07-02 12:05:32]     ✓ 성공 — 영상 50 · 댓글 116 · 누적 쿼터 395/10000
+[2026-07-02 12:05:32] --- (15/70) https://www.youtube.com/channel/UC1UecqDtqdiyxmUy9I-13Ug ---
+[2026-07-02 12:05:33]     ✓ 성공 — 영상 1 · 댓글 27 · 누적 쿼터 400/10000
+[2026-07-02 12:05:33] --- (16/70) https://www.youtube.com/@MaNyeo919 ---
+[2026-07-02 12:05:37]     ✓ 성공 — 영상 25 · 댓글 127 · 누적 쿼터 429/10000
+[2026-07-02 12:05:37] --- (17/70) https://www.youtube.com/channel/UChwgTbkzxm5kEkUTTY4b_xg?view_as=subscriber ---
+[2026-07-02 12:05:40]     ✓ 성공 — 영상 22 · 댓글 27 · 누적 쿼터 454/10000
+[2026-07-02 12:05:40] --- (18/70) https://www.youtube.com/channel/UC9a1MhaaUhq90C2yXOp_6kg?view_as=subscriber ---
+[2026-07-02 12:05:48]     ✓ 성공 — 영상 50 · 댓글 1391 · 누적 쿼터 508/10000
+[2026-07-02 12:05:48] --- (19/70) https://www.youtube.com/channel/UCzGLREERrTx7SbavlsXEa-g ---
+[2026-07-02 12:05:55]     ✓ 성공 — 영상 35 · 댓글 1418 · 누적 쿼터 547/10000
+[2026-07-02 12:05:55] --- (20/70) https://www.youtube.com/channel/UCuRq-One6Q7nG_cH_K0-Dlw ---
+[2026-07-02 12:05:55]     ✗ 실패 — ValueError: 채널 없음/비공개: UCuRq-One6Q7nG_cH_K0-Dlw
+[2026-07-02 12:05:55] --- (21/70) https://www.youtube.com/channel/UCCuBQw7DUzNt42vJ7gBU48g ---
+[2026-07-02 12:05:56]     ✓ 성공 — 영상 1 · 댓글 0 · 누적 쿼터 553/10000
+[2026-07-02 12:05:56] --- (22/70) https://www.youtube.com/channel/UCdQ3wsEF_fRdRwWnTAR37nw?view_as=subscriber ---
+[2026-07-02 12:06:10]     ✓ 성공 — 영상 84 · 댓글 1652 · 누적 쿼터 642/10000
+[2026-07-02 12:06:10] --- (23/70) https://www.youtube.com/channel/UCiussJfR1Z7PbfrslnAFLnA?view_as=subscriber ---
+[2026-07-02 12:06:11]     ✓ 성공 — 영상 2 · 댓글 1 · 누적 쿼터 648/10000
+[2026-07-02 12:06:11] --- (24/70) https://www.youtube.com/channel/UCB9qbnWt-qSgoyBIvmm72wA?view_as=subscriber ---
+[2026-07-02 12:06:12]     ✓ 성공 — 영상 1 · 댓글 18 · 누적 쿼터 653/10000
+[2026-07-02 12:06:12] --- (25/70) https://www.youtube.com/channel/UCIEMWENVckuQEVfDXC3OJ8g?view_as=subscriber ---
+[2026-07-02 12:06:13]     ✓ 성공 — 영상 3 · 댓글 3 · 누적 쿼터 660/10000
+[2026-07-02 12:06:13] --- (26/70) https://www.youtube.com/channel/UCGYi6fNKgnxLCk85xskEwaQ?view_as=subscriber ---
+[2026-07-02 12:06:14]     ✓ 성공 — 영상 2 · 댓글 100 · 누적 쿼터 666/10000
+[2026-07-02 12:06:14] --- (27/70) https://www.youtube.com/channel/UCac_cr3_26_MVb1oxK6nEWw ---
+[2026-07-02 12:06:22]     ✓ 성공 — 영상 50 · 댓글 1018 · 누적 쿼터 720/10000
+[2026-07-02 12:06:22] --- (28/70) https://www.youtube.com/@%EB%BF%8C%EB%8B%B9 ---
+[2026-07-02 12:06:22]     ✗ 실패 — ValueError: 지원하지 않는 채널 URL: https://www.youtube.com/@%EB%BF%8C%EB%8B%B9
+[2026-07-02 12:06:22] --- (29/70) https://www.youtube.com/channel/UCjUC-V0tYOR4w9KGBbIHPiw?view_as=subscriber ---
+[2026-07-02 12:06:23]     ✗ 실패 — ValueError: 채널 없음/비공개: UCjUC-V0tYOR4w9KGBbIHPiw
+[2026-07-02 12:06:23] --- (30/70) https://www.youtube.com/channel/UCeagfNQQZIQwA03Gvg4NPIA?view_as=subscriber ---
+[2026-07-02 12:06:31]     ✓ 성공 — 영상 50 · 댓글 1155 · 누적 쿼터 775/10000
+[2026-07-02 12:06:31] --- (31/70) https://www.youtube.com/channel/UCcwH6HiWH2m2-WrLcaQdt-Q ---
+[2026-07-02 12:06:31]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUcwH6HiWH2m2-WrLcaQdt-Q&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:06:31] --- (32/70) https://www.youtube.com/channel/UCb3SVAhTckLKU_8DW3ihxcg ---
+[2026-07-02 12:06:33]     ✓ 성공 — 영상 5 · 댓글 0 · 누적 쿼터 786/10000
+[2026-07-02 12:06:33] --- (33/70) https://www.youtube.com/@Luiten98 ---
+[2026-07-02 12:06:41]     ✓ 성공 — 영상 50 · 댓글 264 · 누적 쿼터 841/10000
+[2026-07-02 12:06:41] --- (34/70) https://www.youtube.com/channel/UC8Vf_IumBrxx5b0XlOAVBZA?view_as=subscriber ---
+[2026-07-02 12:06:57]     ✓ 성공 — 영상 120 · 댓글 186 · 누적 쿼터 968/10000
+[2026-07-02 12:06:57] --- (35/70) https://www.youtube.com/channel/UCyDnvtdLOg6i8sSyDdhojpw ---
+[2026-07-02 12:06:57]     ✗ 실패 — ValueError: 채널 없음/비공개: UCyDnvtdLOg6i8sSyDdhojpw
+[2026-07-02 12:06:57] --- (36/70) https://www.youtube.com/channel/UCVX-mXQ_VPZR0UtULKC3X4g ---
+[2026-07-02 12:06:58]     ✓ 성공 — 영상 1 · 댓글 0 · 누적 쿼터 974/10000
+[2026-07-02 12:06:58] --- (37/70) https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC ---
+[2026-07-02 12:06:58]     ✗ 실패 — ValueError: 지원하지 않는 채널 URL: https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC
+[2026-07-02 12:06:58] --- (38/70) https://www.youtube.com/channel/UCzhubqZ9NgXvsXfdPvP2rKQ ---
+[2026-07-02 12:07:00]     ✓ 성공 — 영상 7 · 댓글 291 · 누적 쿼터 985/10000
+[2026-07-02 12:07:00] --- (39/70) https://www.youtube.com/channel/UCwrWQ31IxDRIUaHXomDovBQ?view_as=subscriber ---
+[2026-07-02 12:07:01]     ✓ 성공 — 영상 2 · 댓글 1 · 누적 쿼터 991/10000
+[2026-07-02 12:07:01] --- (40/70) https://www.youtube.com/channel/UCMq8kyrmn8OxtSBO69nwqjg ---
+[2026-07-02 12:07:07]     ✓ 성공 — 영상 38 · 댓글 118 · 누적 쿼터 1033/10000
+[2026-07-02 12:07:07] --- (41/70) https://www.youtube.com/channel/UCGbiBTo3_TRSug2v0uk8Zfw ---
+[2026-07-02 12:07:15]     ✓ 성공 — 영상 50 · 댓글 84 · 누적 쿼터 1087/10000
+[2026-07-02 12:07:15] --- (42/70) https://www.youtube.com/channel/UCjPjA9XnTk4tXqpYVHMFVhA?view_as=subscriber ---
+[2026-07-02 12:07:21]     ✓ 성공 — 영상 50 · 댓글 6 · 누적 쿼터 1141/10000
+[2026-07-02 12:07:21] --- (43/70) https://www.youtube.com/channel/UCZHa34QBonidr2xS6u2XENg ---
+[2026-07-02 12:07:30]     ✓ 성공 — 영상 50 · 댓글 544 · 누적 쿼터 1195/10000
+[2026-07-02 12:07:30] --- (44/70) https://www.youtube.com/channel/UCdyMJIqh1eBk-6-Old099pQ ---
+[2026-07-02 12:07:30]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUdyMJIqh1eBk-6-Old099pQ&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:07:30] --- (45/70) https://www.youtube.com/channel/UCXwx-NJkbHp1WaVzQuiS1ZQ?view_as=subscriber ---
+[2026-07-02 12:07:30]     ✗ 실패 — ValueError: 채널 없음/비공개: UCXwx-NJkbHp1WaVzQuiS1ZQ
+[2026-07-02 12:07:30] --- (46/70) https://www.youtube.com/channel/UCWbn0sBIlCVe0WERN1M-0-Q?view_as=subscriber ---
+[2026-07-02 12:07:32]     ✓ 성공 — 영상 4 · 댓글 2 · 누적 쿼터 1206/10000
+[2026-07-02 12:07:32] --- (47/70) http://www.youtube.com/channel/UCYt-IXLU-F_qQVV0dm5Q8WQ ---
+[2026-07-02 12:07:39]     ✓ 성공 — 영상 50 · 댓글 160 · 누적 쿼터 1260/10000
+[2026-07-02 12:07:39] --- (48/70) https://www.youtube.com/@tsuki6439 ---
+[2026-07-02 12:07:40]     ✓ 성공 — 영상 1 · 댓글 3 · 누적 쿼터 1266/10000
+[2026-07-02 12:07:40] --- (49/70) https://www.youtube.com/channel/UCS9aX77n6hzKqtE3Yd-moHg?view_as=subscriber ---
+[2026-07-02 12:07:41]     ✓ 성공 — 영상 1 · 댓글 0 · 누적 쿼터 1271/10000
+[2026-07-02 12:07:41] --- (50/70) https://www.youtube.com/user/yeseuli1120 ---
+[2026-07-02 12:07:52]     ✓ 성공 — 영상 50 · 댓글 3518 · 누적 쿼터 1326/10000
+[2026-07-02 12:07:52] --- (51/70) https://www.youtube.com/channel/UCd_CnYXEADR_nqWuOrr_wGg ---
+[2026-07-02 12:07:59]     ✓ 성공 — 영상 50 · 댓글 251 · 누적 쿼터 1380/10000
+[2026-07-02 12:07:59] --- (52/70) https://www.youtube.com/channel/UCb72-QSFmu82PpGwCpJvI7g?view_as=subscriber ---
+[2026-07-02 12:08:09]     ✓ 성공 — 영상 50 · 댓글 1908 · 누적 쿼터 1434/10000
+[2026-07-02 12:08:09] --- (53/70) https://www.youtube.com/channel/UC1dNo0e4h7ZnuZ3w2aajV5g?view_as=subscriber ---
+[2026-07-02 12:08:16]     ✓ 성공 — 영상 42 · 댓글 129 · 누적 쿼터 1479/10000
+[2026-07-02 12:08:16] --- (54/70) https://www.youtube.com/channel/UCWWGqdYjlmRhLL8up5D7CUg?view_as=subscriber ---
+[2026-07-02 12:08:23]     ✓ 성공 — 영상 50 · 댓글 71 · 누적 쿼터 1533/10000
+[2026-07-02 12:08:23] --- (55/70) https://www.youtube.com/channel/UCtU07nsaAu4CgPV3emsUqWA?view_as=subscriber ---
+[2026-07-02 12:08:27]     ✓ 성공 — 영상 15 · 댓글 196 · 누적 쿼터 1552/10000
+[2026-07-02 12:08:27] --- (56/70) https://www.youtube.com/channel/UCSCogaMMoxrDe43Cx_kB9cQ ---
+[2026-07-02 12:08:30]     ✓ 성공 — 영상 11 · 댓글 967 · 누적 쿼터 1566/10000
+[2026-07-02 12:08:30] --- (57/70) https://www.youtube.com/channel/UCgQ6Kv981Rvo9zNKoaHggNQ ---
+[2026-07-02 12:08:33]     ✓ 성공 — 영상 18 · 댓글 15 · 누적 쿼터 1588/10000
+[2026-07-02 12:08:33] --- (58/70) https://www.youtube.com/channel/UCz7DgKcPSimQGV9j9R-DCiA?view_as=subscriber ---
+[2026-07-02 12:08:47]     ✓ 성공 — 영상 100 · 댓글 50 · 누적 쿼터 1694/10000
+[2026-07-02 12:08:47] --- (59/70) https://www.youtube.com/channel/UCHVbw9LHT2j--gnz5s_dBMA ---
+[2026-07-02 12:08:48]     ✓ 성공 — 영상 4 · 댓글 0 · 누적 쿼터 1702/10000
+[2026-07-02 12:08:48] --- (60/70) https://www.youtube.com/channel/UCTpLWbxrOLcO-mDZj0EQD5g?view_as=subscriber ---
+[2026-07-02 12:08:58]     ✓ 성공 — 영상 50 · 댓글 833 · 누적 쿼터 1756/10000
+[2026-07-02 12:08:58] --- (61/70) https://www.youtube.com/channel/UCGj2z68bfqGSN3ndfHvjivA?view_as=subscriber ---
+[2026-07-02 12:09:01]     ✓ 성공 — 영상 9 · 댓글 236 · 누적 쿼터 1769/10000
+[2026-07-02 12:09:01] --- (62/70) https://www.youtube.com/channel/UC7mS4h1sbYv-eTnoi6pE5AQ ---
+[2026-07-02 12:09:01]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UU7mS4h1sbYv-eTnoi6pE5AQ&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:09:01] --- (63/70) https://www.youtube.com/channel/UCscltv-x_wnkAT8KX0ES1bA ---
+[2026-07-02 12:09:05]     ✓ 성공 — 영상 19 · 댓글 139 · 누적 쿼터 1794/10000
+[2026-07-02 12:09:05] --- (64/70) https://www.youtube.com/channel/UC_VOIxjBN_WIPKxpPs1omZQ ---
+[2026-07-02 12:09:14]     ✓ 성공 — 영상 42 · 댓글 2700 · 누적 쿼터 1839/10000
+[2026-07-02 12:09:14] --- (65/70) https://www.youtube.com/channel/누룽지누나 ---
+[2026-07-02 12:09:14]     ✗ 실패 — ValueError: 지원하지 않는 채널 URL: https://www.youtube.com/channel/누룽지누나
+[2026-07-02 12:09:14] --- (66/70) https://www.youtube.com/channel/UC7OO_36wX6727cIJUWm33Xg ---
+[2026-07-02 12:09:15]     ✓ 성공 — 영상 2 · 댓글 6 · 누적 쿼터 1845/10000
+[2026-07-02 12:09:15] --- (67/70) https://youtube.com/@truewater_?si=5xjg6HTLEbG7WkmH ---
+[2026-07-02 12:09:18]     ✓ 성공 — 영상 14 · 댓글 81 · 누적 쿼터 1864/10000
+[2026-07-02 12:09:18] --- (68/70) https://www.youtube.com/channel/UCT3jVTX3vemagDK0M8l_u1g?view_as=subscriber ---
+[2026-07-02 12:09:18]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUT3jVTX3vemagDK0M8l_u1g&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:09:18] --- (69/70) https://www.youtube.com/channel/UCceGFPQmfOAvnCrII8mkUQg?view_as=subscriber ---
+[2026-07-02 12:09:18]     ✗ 실패 — ValueError: 채널 없음/비공개: UCceGFPQmfOAvnCrII8mkUQg
+[2026-07-02 12:09:18] --- (70/70) https://www.youtube.com/channel/UCPPQmHLA6zMLC6PfbI56CFQ?view_as=subscriber ---
+[2026-07-02 12:09:18]     ✗ 실패 — ValueError: 채널 없음/비공개: UCPPQmHLA6zMLC6PfbI56CFQ
+[2026-07-02 12:09:18] ----- 지표 재계산 -----
+[2026-07-02 12:09:19]     ✓ 지표 재계산 완료
+[2026-07-02 12:09:19] ===== 배치 종료 — 성공 54 · 실패 16 · 건너뜀 0 · 성공률 77.1% · 총 쿼터 1868 =====
+
+[2026-07-02 12:45:51] ===== 배치 시작 — 대상 70개 채널 =====
+[2026-07-02 12:45:51] --- (1/70) https://www.youtube.com/channel/UChIak7iW6qc_-whDOybqIpw ---
+[2026-07-02 12:45:53]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 4/10000
+[2026-07-02 12:45:53] --- (2/70) https://www.youtube.com/channel/UCotAy56nD6uxya3opvX7IBg ---
+[2026-07-02 12:45:53]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 8/10000
+[2026-07-02 12:45:53] --- (3/70) https://www.youtube.com/channel/UC0BqJvnq0FZcBUKGQTGFFwg?sub_confirmation=1 ---
+[2026-07-02 12:45:54]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UU0BqJvnq0FZcBUKGQTGFFwg&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:45:54] --- (4/70) https://www.youtube.com/channel/UCrik9F226RS8SozMbo45ofQ?view_as=subscriber ---
+[2026-07-02 12:45:55]     ✓ 성공 — 영상 25 · 신규 0 · 댓글 0 · 누적 쿼터 14/10000
+[2026-07-02 12:45:55] --- (5/70) https://www.youtube.com/channel/UCd1Q3-ZOi9rmtCJiGGJZ-ng?view_as=subscriber ---
+[2026-07-02 12:45:56]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 18/10000
+[2026-07-02 12:45:56] --- (6/70) https://www.youtube.com/channel/UCkkVe8okaSUNfBS5sxorrIQ?sub_confirmation=1 ---
+[2026-07-02 12:45:57]     ✓ 성공 — 영상 6 · 신규 0 · 댓글 0 · 누적 쿼터 22/10000
+[2026-07-02 12:45:57] --- (7/70) https://www.youtube.com/channel/UCizAD_gtbKrE6Sgajer_Lvg ---
+[2026-07-02 12:45:57]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUizAD_gtbKrE6Sgajer_Lvg&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:45:57] --- (8/70) https://www.youtube.com/channel/UCPsdKTSJmqP5pj9cIiKSNJw ---
+[2026-07-02 12:45:58]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUPsdKTSJmqP5pj9cIiKSNJw&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:45:58] --- (9/70) https://www.youtube.com/channel/UCGuurERkbPnHhEkTZOq_WDw?view_as=subscriber ---
+[2026-07-02 12:45:59]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 30/10000
+[2026-07-02 12:45:59] --- (10/70) https://www.youtube.com/channel/UCGbspjBVI4zVVXQDrA0HrBg ---
+[2026-07-02 12:46:01]     ✓ 성공 — 영상 65 · 신규 0 · 댓글 0 · 누적 쿼터 35/10000
+[2026-07-02 12:46:01] --- (11/70) https://www.youtube.com/channel/UCK-KsPKDFDN6AqM5IL1q2dw ---
+[2026-07-02 12:46:02]     ✓ 성공 — 영상 5 · 신규 0 · 댓글 0 · 누적 쿼터 39/10000
+[2026-07-02 12:46:02] --- (12/70) https://www.youtube.com/channel/UCHzre37UF4o64HRhp-7CDzQ?view_as=subscriber ---
+[2026-07-02 12:46:03]     ✓ 성공 — 영상 22 · 신규 0 · 댓글 0 · 누적 쿼터 42/10000
+[2026-07-02 12:46:03] --- (13/70) https://www.youtube.com/user/ChaeHwaRyung ---
+[2026-07-02 12:46:04]     ✓ 성공 — 영상 21 · 신규 0 · 댓글 0 · 누적 쿼터 46/10000
+[2026-07-02 12:46:04] --- (14/70) https://www.youtube.com/channel/UCc_nVsXbC8trjXLqcwmhiYg ---
+[2026-07-02 12:46:05]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 50/10000
+[2026-07-02 12:46:05] --- (15/70) https://www.youtube.com/channel/UC1UecqDtqdiyxmUy9I-13Ug ---
+[2026-07-02 12:46:06]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 54/10000
+[2026-07-02 12:46:06] --- (16/70) https://www.youtube.com/@MaNyeo919 ---
+[2026-07-02 12:46:07]     ✓ 성공 — 영상 25 · 신규 0 · 댓글 0 · 누적 쿼터 58/10000
+[2026-07-02 12:46:07] --- (17/70) https://www.youtube.com/channel/UChwgTbkzxm5kEkUTTY4b_xg?view_as=subscriber ---
+[2026-07-02 12:46:07]     ✓ 성공 — 영상 22 · 신규 0 · 댓글 0 · 누적 쿼터 61/10000
+[2026-07-02 12:46:07] --- (18/70) https://www.youtube.com/channel/UC9a1MhaaUhq90C2yXOp_6kg?view_as=subscriber ---
+[2026-07-02 12:46:09]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 65/10000
+[2026-07-02 12:46:09] --- (19/70) https://www.youtube.com/channel/UCzGLREERrTx7SbavlsXEa-g ---
+[2026-07-02 12:46:10]     ✓ 성공 — 영상 35 · 신규 0 · 댓글 0 · 누적 쿼터 69/10000
+[2026-07-02 12:46:10] --- (20/70) https://www.youtube.com/channel/UCuRq-One6Q7nG_cH_K0-Dlw ---
+[2026-07-02 12:46:10]     ✗ 실패 — ValueError: 채널 없음/비공개: UCuRq-One6Q7nG_cH_K0-Dlw
+[2026-07-02 12:46:10] --- (21/70) https://www.youtube.com/channel/UCCuBQw7DUzNt42vJ7gBU48g ---
+[2026-07-02 12:46:11]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 74/10000
+[2026-07-02 12:46:11] --- (22/70) https://www.youtube.com/channel/UCdQ3wsEF_fRdRwWnTAR37nw?view_as=subscriber ---
+[2026-07-02 12:46:12]     ✓ 성공 — 영상 84 · 신규 0 · 댓글 0 · 누적 쿼터 79/10000
+[2026-07-02 12:46:12] --- (23/70) https://www.youtube.com/channel/UCiussJfR1Z7PbfrslnAFLnA?view_as=subscriber ---
+[2026-07-02 12:46:13]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 83/10000
+[2026-07-02 12:46:13] --- (24/70) https://www.youtube.com/channel/UCB9qbnWt-qSgoyBIvmm72wA?view_as=subscriber ---
+[2026-07-02 12:46:13]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 87/10000
+[2026-07-02 12:46:13] --- (25/70) https://www.youtube.com/channel/UCIEMWENVckuQEVfDXC3OJ8g?view_as=subscriber ---
+[2026-07-02 12:46:14]     ✓ 성공 — 영상 3 · 신규 0 · 댓글 0 · 누적 쿼터 91/10000
+[2026-07-02 12:46:14] --- (26/70) https://www.youtube.com/channel/UCGYi6fNKgnxLCk85xskEwaQ?view_as=subscriber ---
+[2026-07-02 12:46:15]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 95/10000
+[2026-07-02 12:46:15] --- (27/70) https://www.youtube.com/channel/UCac_cr3_26_MVb1oxK6nEWw ---
+[2026-07-02 12:46:16]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 99/10000
+[2026-07-02 12:46:16] --- (28/70) https://www.youtube.com/@%EB%BF%8C%EB%8B%B9 ---
+[2026-07-02 12:46:16]     ✗ 실패 — ValueError: 지원하지 않는 채널 URL: https://www.youtube.com/@%EB%BF%8C%EB%8B%B9
+[2026-07-02 12:46:16] --- (29/70) https://www.youtube.com/channel/UCjUC-V0tYOR4w9KGBbIHPiw?view_as=subscriber ---
+[2026-07-02 12:46:16]     ✗ 실패 — ValueError: 채널 없음/비공개: UCjUC-V0tYOR4w9KGBbIHPiw
+[2026-07-02 12:46:16] --- (30/70) https://www.youtube.com/channel/UCeagfNQQZIQwA03Gvg4NPIA?view_as=subscriber ---
+[2026-07-02 12:46:18]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 104/10000
+[2026-07-02 12:46:18] --- (31/70) https://www.youtube.com/channel/UCcwH6HiWH2m2-WrLcaQdt-Q ---
+[2026-07-02 12:46:18]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUcwH6HiWH2m2-WrLcaQdt-Q&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:46:18] --- (32/70) https://www.youtube.com/channel/UCb3SVAhTckLKU_8DW3ihxcg ---
+[2026-07-02 12:46:19]     ✓ 성공 — 영상 5 · 신규 0 · 댓글 0 · 누적 쿼터 110/10000
+[2026-07-02 12:46:19] --- (33/70) https://www.youtube.com/@Luiten98 ---
+[2026-07-02 12:46:20]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 115/10000
+[2026-07-02 12:46:20] --- (34/70) https://www.youtube.com/channel/UC8Vf_IumBrxx5b0XlOAVBZA?view_as=subscriber ---
+[2026-07-02 12:46:22]     ✓ 성공 — 영상 120 · 신규 0 · 댓글 0 · 누적 쿼터 122/10000
+[2026-07-02 12:46:22] --- (35/70) https://www.youtube.com/channel/UCyDnvtdLOg6i8sSyDdhojpw ---
+[2026-07-02 12:46:22]     ✗ 실패 — ValueError: 채널 없음/비공개: UCyDnvtdLOg6i8sSyDdhojpw
+[2026-07-02 12:46:22] --- (36/70) https://www.youtube.com/channel/UCVX-mXQ_VPZR0UtULKC3X4g ---
+[2026-07-02 12:46:23]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 127/10000
+[2026-07-02 12:46:23] --- (37/70) https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC ---
+[2026-07-02 12:46:23]     ✗ 실패 — ValueError: 지원하지 않는 채널 URL: https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC
+[2026-07-02 12:46:23] --- (38/70) https://www.youtube.com/channel/UCzhubqZ9NgXvsXfdPvP2rKQ ---
+[2026-07-02 12:46:24]     ✓ 성공 — 영상 7 · 신규 0 · 댓글 0 · 누적 쿼터 131/10000
+[2026-07-02 12:46:24] --- (39/70) https://www.youtube.com/channel/UCwrWQ31IxDRIUaHXomDovBQ?view_as=subscriber ---
+[2026-07-02 12:46:25]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 135/10000
+[2026-07-02 12:46:25] --- (40/70) https://www.youtube.com/channel/UCMq8kyrmn8OxtSBO69nwqjg ---
+[2026-07-02 12:46:26]     ✓ 성공 — 영상 38 · 신규 0 · 댓글 0 · 누적 쿼터 139/10000
+[2026-07-02 12:46:26] --- (41/70) https://www.youtube.com/channel/UCGbiBTo3_TRSug2v0uk8Zfw ---
+[2026-07-02 12:46:27]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 143/10000
+[2026-07-02 12:46:27] --- (42/70) https://www.youtube.com/channel/UCjPjA9XnTk4tXqpYVHMFVhA?view_as=subscriber ---
+[2026-07-02 12:46:28]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 147/10000
+[2026-07-02 12:46:28] --- (43/70) https://www.youtube.com/channel/UCZHa34QBonidr2xS6u2XENg ---
+[2026-07-02 12:46:29]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 151/10000
+[2026-07-02 12:46:29] --- (44/70) https://www.youtube.com/channel/UCdyMJIqh1eBk-6-Old099pQ ---
+[2026-07-02 12:46:30]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUdyMJIqh1eBk-6-Old099pQ&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:46:30] --- (45/70) https://www.youtube.com/channel/UCXwx-NJkbHp1WaVzQuiS1ZQ?view_as=subscriber ---
+[2026-07-02 12:46:30]     ✗ 실패 — ValueError: 채널 없음/비공개: UCXwx-NJkbHp1WaVzQuiS1ZQ
+[2026-07-02 12:46:30] --- (46/70) https://www.youtube.com/channel/UCWbn0sBIlCVe0WERN1M-0-Q?view_as=subscriber ---
+[2026-07-02 12:46:31]     ✓ 성공 — 영상 4 · 신규 0 · 댓글 0 · 누적 쿼터 158/10000
+[2026-07-02 12:46:31] --- (47/70) http://www.youtube.com/channel/UCYt-IXLU-F_qQVV0dm5Q8WQ ---
+[2026-07-02 12:46:32]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 162/10000
+[2026-07-02 12:46:32] --- (48/70) https://www.youtube.com/@tsuki6439 ---
+[2026-07-02 12:46:33]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 167/10000
+[2026-07-02 12:46:33] --- (49/70) https://www.youtube.com/channel/UCS9aX77n6hzKqtE3Yd-moHg?view_as=subscriber ---
+[2026-07-02 12:46:33]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 171/10000
+[2026-07-02 12:46:33] --- (50/70) https://www.youtube.com/user/yeseuli1120 ---
+[2026-07-02 12:46:35]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 176/10000
+[2026-07-02 12:46:35] --- (51/70) https://www.youtube.com/channel/UCd_CnYXEADR_nqWuOrr_wGg ---
+[2026-07-02 12:46:36]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 180/10000
+[2026-07-02 12:46:36] --- (52/70) https://www.youtube.com/channel/UCb72-QSFmu82PpGwCpJvI7g?view_as=subscriber ---
+[2026-07-02 12:46:37]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 184/10000
+[2026-07-02 12:46:37] --- (53/70) https://www.youtube.com/channel/UC1dNo0e4h7ZnuZ3w2aajV5g?view_as=subscriber ---
+[2026-07-02 12:46:37]     ✓ 성공 — 영상 42 · 신규 0 · 댓글 0 · 누적 쿼터 187/10000
+[2026-07-02 12:46:37] --- (54/70) https://www.youtube.com/channel/UCWWGqdYjlmRhLL8up5D7CUg?view_as=subscriber ---
+[2026-07-02 12:46:39]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 191/10000
+[2026-07-02 12:46:39] --- (55/70) https://www.youtube.com/channel/UCtU07nsaAu4CgPV3emsUqWA?view_as=subscriber ---
+[2026-07-02 12:46:40]     ✓ 성공 — 영상 15 · 신규 0 · 댓글 0 · 누적 쿼터 195/10000
+[2026-07-02 12:46:40] --- (56/70) https://www.youtube.com/channel/UCSCogaMMoxrDe43Cx_kB9cQ ---
+[2026-07-02 12:46:40]     ✓ 성공 — 영상 11 · 신규 0 · 댓글 0 · 누적 쿼터 198/10000
+[2026-07-02 12:46:40] --- (57/70) https://www.youtube.com/channel/UCgQ6Kv981Rvo9zNKoaHggNQ ---
+[2026-07-02 12:46:41]     ✓ 성공 — 영상 18 · 신규 0 · 댓글 0 · 누적 쿼터 202/10000
+[2026-07-02 12:46:41] --- (58/70) https://www.youtube.com/channel/UCz7DgKcPSimQGV9j9R-DCiA?view_as=subscriber ---
+[2026-07-02 12:46:43]     ✓ 성공 — 영상 100 · 신규 0 · 댓글 0 · 누적 쿼터 208/10000
+[2026-07-02 12:46:43] --- (59/70) https://www.youtube.com/channel/UCHVbw9LHT2j--gnz5s_dBMA ---
+[2026-07-02 12:46:44]     ✓ 성공 — 영상 4 · 신규 0 · 댓글 0 · 누적 쿼터 212/10000
+[2026-07-02 12:46:44] --- (60/70) https://www.youtube.com/channel/UCTpLWbxrOLcO-mDZj0EQD5g?view_as=subscriber ---
+[2026-07-02 12:46:45]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 216/10000
+[2026-07-02 12:46:45] --- (61/70) https://www.youtube.com/channel/UCGj2z68bfqGSN3ndfHvjivA?view_as=subscriber ---
+[2026-07-02 12:46:46]     ✓ 성공 — 영상 9 · 신규 0 · 댓글 0 · 누적 쿼터 220/10000
+[2026-07-02 12:46:46] --- (62/70) https://www.youtube.com/channel/UC7mS4h1sbYv-eTnoi6pE5AQ ---
+[2026-07-02 12:46:46]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UU7mS4h1sbYv-eTnoi6pE5AQ&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:46:46] --- (63/70) https://www.youtube.com/channel/UCscltv-x_wnkAT8KX0ES1bA ---
+[2026-07-02 12:46:47]     ✓ 성공 — 영상 19 · 신규 0 · 댓글 0 · 누적 쿼터 226/10000
+[2026-07-02 12:46:47] --- (64/70) https://www.youtube.com/channel/UC_VOIxjBN_WIPKxpPs1omZQ ---
+[2026-07-02 12:46:48]     ✓ 성공 — 영상 42 · 신규 0 · 댓글 0 · 누적 쿼터 229/10000
+[2026-07-02 12:46:48] --- (65/70) https://www.youtube.com/channel/누룽지누나 ---
+[2026-07-02 12:46:48]     ✗ 실패 — ValueError: 지원하지 않는 채널 URL: https://www.youtube.com/channel/누룽지누나
+[2026-07-02 12:46:48] --- (66/70) https://www.youtube.com/channel/UC7OO_36wX6727cIJUWm33Xg ---
+[2026-07-02 12:46:49]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 233/10000
+[2026-07-02 12:46:49] --- (67/70) https://youtube.com/@truewater_?si=5xjg6HTLEbG7WkmH ---
+[2026-07-02 12:46:50]     ✓ 성공 — 영상 14 · 신규 0 · 댓글 0 · 누적 쿼터 238/10000
+[2026-07-02 12:46:50] --- (68/70) https://www.youtube.com/channel/UCT3jVTX3vemagDK0M8l_u1g?view_as=subscriber ---
+[2026-07-02 12:46:50]     ✗ 실패 — HttpError: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=UUT3jVTX3vemagDK0M8l_u1g&maxResults=50&key=AIzaSyCcHiww2bYnXK3YqkSZVZAEZShcv-ERA4M&alt=json returned "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.". Details: "[{'message': "The playlist identified with the request's <code>playlistId</code> parameter cannot be found.", 'domain': 'youtube.playlistItem', 'reason': 'playlistNotFound', 'location': 'playlistId', 'locationType': 'parameter'}]">
+[2026-07-02 12:46:50] --- (69/70) https://www.youtube.com/channel/UCceGFPQmfOAvnCrII8mkUQg?view_as=subscriber ---
+[2026-07-02 12:46:51]     ✗ 실패 — ValueError: 채널 없음/비공개: UCceGFPQmfOAvnCrII8mkUQg
+[2026-07-02 12:46:51] --- (70/70) https://www.youtube.com/channel/UCPPQmHLA6zMLC6PfbI56CFQ?view_as=subscriber ---
+[2026-07-02 12:46:51]     ✗ 실패 — ValueError: 채널 없음/비공개: UCPPQmHLA6zMLC6PfbI56CFQ
+[2026-07-02 12:46:51] ----- 변경된 데이터 없음 → 지표 계산 생략 -----
+[2026-07-02 12:46:51] ===== 배치 종료 — 성공 54 · 실패 16 · 건너뜀 0 · 성공률 77.1% · 총 쿼터 242 =====
+
+[2026-07-02 15:56:22] ===== 배치 시작 — 대상 71개 채널 =====
+[2026-07-02 15:56:22] --- (1/71) https://www.youtube.com/c/witching_tv ---
+[2026-07-02 15:56:26]     ✓ 성공 — 영상 1 · 신규 1 · 댓글 0 · 누적 쿼터 6/10000
+[2026-07-02 15:56:26] --- (2/71) https://www.youtube.com/channel/UChIak7iW6qc_-whDOybqIpw ---
+[2026-07-02 15:56:27]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 10/10000
+[2026-07-02 15:56:27] --- (3/71) https://www.youtube.com/channel/UCotAy56nD6uxya3opvX7IBg ---
+[2026-07-02 15:56:28]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 14/10000
+[2026-07-02 15:56:28] --- (4/71) https://www.youtube.com/channel/UC0BqJvnq0FZcBUKGQTGFFwg?sub_confirmation=1 ---
+[2026-07-02 15:56:29]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 116/10000
+[2026-07-02 15:56:29] --- (5/71) https://www.youtube.com/channel/UCrik9F226RS8SozMbo45ofQ?view_as=subscriber ---
+[2026-07-02 15:56:30]     ✓ 성공 — 영상 25 · 신규 0 · 댓글 0 · 누적 쿼터 120/10000
+[2026-07-02 15:56:30] --- (6/71) https://www.youtube.com/channel/UCd1Q3-ZOi9rmtCJiGGJZ-ng?view_as=subscriber ---
+[2026-07-02 15:56:31]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 124/10000
+[2026-07-02 15:56:31] --- (7/71) https://www.youtube.com/channel/UCkkVe8okaSUNfBS5sxorrIQ?sub_confirmation=1 ---
+[2026-07-02 15:56:32]     ✓ 성공 — 영상 6 · 신규 0 · 댓글 0 · 누적 쿼터 128/10000
+[2026-07-02 15:56:32] --- (8/71) https://www.youtube.com/channel/UCizAD_gtbKrE6Sgajer_Lvg ---
+[2026-07-02 15:56:33]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 230/10000
+[2026-07-02 15:56:33] --- (9/71) https://www.youtube.com/channel/UCPsdKTSJmqP5pj9cIiKSNJw ---
+[2026-07-02 15:56:33]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 332/10000
+[2026-07-02 15:56:33] --- (10/71) https://www.youtube.com/channel/UCGuurERkbPnHhEkTZOq_WDw?view_as=subscriber ---
+[2026-07-02 15:56:35]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 336/10000
+[2026-07-02 15:56:35] --- (11/71) https://www.youtube.com/channel/UCGbspjBVI4zVVXQDrA0HrBg ---
+[2026-07-02 15:56:36]     ✓ 성공 — 영상 65 · 신규 0 · 댓글 0 · 누적 쿼터 341/10000
+[2026-07-02 15:56:36] --- (12/71) https://www.youtube.com/channel/UCK-KsPKDFDN6AqM5IL1q2dw ---
+[2026-07-02 15:56:37]     ✓ 성공 — 영상 5 · 신규 0 · 댓글 0 · 누적 쿼터 345/10000
+[2026-07-02 15:56:37] --- (13/71) https://www.youtube.com/channel/UCHzre37UF4o64HRhp-7CDzQ?view_as=subscriber ---
+[2026-07-02 15:56:38]     ✓ 성공 — 영상 22 · 신규 0 · 댓글 0 · 누적 쿼터 348/10000
+[2026-07-02 15:56:38] --- (14/71) https://www.youtube.com/user/ChaeHwaRyung ---
+[2026-07-02 15:56:39]     ✓ 성공 — 영상 21 · 신규 0 · 댓글 0 · 누적 쿼터 352/10000
+[2026-07-02 15:56:39] --- (15/71) https://www.youtube.com/channel/UCc_nVsXbC8trjXLqcwmhiYg ---
+[2026-07-02 15:56:41]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 356/10000
+[2026-07-02 15:56:41] --- (16/71) https://www.youtube.com/channel/UC1UecqDtqdiyxmUy9I-13Ug ---
+[2026-07-02 15:56:42]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 360/10000
+[2026-07-02 15:56:42] --- (17/71) https://www.youtube.com/@MaNyeo919 ---
+[2026-07-02 15:56:43]     ✓ 성공 — 영상 25 · 신규 0 · 댓글 0 · 누적 쿼터 364/10000
+[2026-07-02 15:56:43] --- (18/71) https://www.youtube.com/channel/UChwgTbkzxm5kEkUTTY4b_xg?view_as=subscriber ---
+[2026-07-02 15:56:44]     ✓ 성공 — 영상 22 · 신규 0 · 댓글 0 · 누적 쿼터 367/10000
+[2026-07-02 15:56:44] --- (19/71) https://www.youtube.com/channel/UC9a1MhaaUhq90C2yXOp_6kg?view_as=subscriber ---
+[2026-07-02 15:56:45]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 371/10000
+[2026-07-02 15:56:45] --- (20/71) https://www.youtube.com/channel/UCzGLREERrTx7SbavlsXEa-g ---
+[2026-07-02 15:56:46]     ✓ 성공 — 영상 35 · 신규 0 · 댓글 0 · 누적 쿼터 375/10000
+[2026-07-02 15:56:46] --- (21/71) https://www.youtube.com/channel/UCuRq-One6Q7nG_cH_K0-Dlw ---
+[2026-07-02 15:56:46]     ✗ 실패 — ValueError: 채널 없음/비공개: UCuRq-One6Q7nG_cH_K0-Dlw
+[2026-07-02 15:56:46] --- (22/71) https://www.youtube.com/channel/UCCuBQw7DUzNt42vJ7gBU48g ---
+[2026-07-02 15:56:47]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 380/10000
+[2026-07-02 15:56:47] --- (23/71) https://www.youtube.com/channel/UCdQ3wsEF_fRdRwWnTAR37nw?view_as=subscriber ---
+[2026-07-02 15:56:49]     ✓ 성공 — 영상 85 · 신규 1 · 댓글 12 · 누적 쿼터 386/10000
+[2026-07-02 15:56:49] --- (24/71) https://www.youtube.com/channel/UCiussJfR1Z7PbfrslnAFLnA?view_as=subscriber ---
+[2026-07-02 15:56:49]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 390/10000
+[2026-07-02 15:56:49] --- (25/71) https://www.youtube.com/channel/UCB9qbnWt-qSgoyBIvmm72wA?view_as=subscriber ---
+[2026-07-02 15:56:50]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 394/10000
+[2026-07-02 15:56:50] --- (26/71) https://www.youtube.com/channel/UCIEMWENVckuQEVfDXC3OJ8g?view_as=subscriber ---
+[2026-07-02 15:56:51]     ✓ 성공 — 영상 3 · 신규 0 · 댓글 0 · 누적 쿼터 398/10000
+[2026-07-02 15:56:51] --- (27/71) https://www.youtube.com/channel/UCGYi6fNKgnxLCk85xskEwaQ?view_as=subscriber ---
+[2026-07-02 15:56:52]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 402/10000
+[2026-07-02 15:56:52] --- (28/71) https://www.youtube.com/channel/UCac_cr3_26_MVb1oxK6nEWw ---
+[2026-07-02 15:56:53]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 406/10000
+[2026-07-02 15:56:53] --- (29/71) https://www.youtube.com/@%EB%BF%8C%EB%8B%B9 ---
+[2026-07-02 15:56:53]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/@%EB%BF%8C%EB%8B%B9
+[2026-07-02 15:56:53] --- (30/71) https://www.youtube.com/channel/UCjUC-V0tYOR4w9KGBbIHPiw?view_as=subscriber ---
+[2026-07-02 15:56:53]     ✗ 실패 — ValueError: 채널 없음/비공개: UCjUC-V0tYOR4w9KGBbIHPiw
+[2026-07-02 15:56:53] --- (31/71) https://www.youtube.com/channel/UCeagfNQQZIQwA03Gvg4NPIA?view_as=subscriber ---
+[2026-07-02 15:56:54]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 411/10000
+[2026-07-02 15:56:54] --- (32/71) https://www.youtube.com/channel/UCcwH6HiWH2m2-WrLcaQdt-Q ---
+[2026-07-02 15:56:55]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 513/10000
+[2026-07-02 15:56:55] --- (33/71) https://www.youtube.com/channel/UCb3SVAhTckLKU_8DW3ihxcg ---
+[2026-07-02 15:56:56]     ✓ 성공 — 영상 5 · 신규 0 · 댓글 0 · 누적 쿼터 517/10000
+[2026-07-02 15:56:56] --- (34/71) https://www.youtube.com/@Luiten98 ---
+[2026-07-02 15:56:57]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 522/10000
+[2026-07-02 15:56:57] --- (35/71) https://www.youtube.com/channel/UC8Vf_IumBrxx5b0XlOAVBZA?view_as=subscriber ---
+[2026-07-02 15:57:00]     ✓ 성공 — 영상 120 · 신규 0 · 댓글 0 · 누적 쿼터 529/10000
+[2026-07-02 15:57:00] --- (36/71) https://www.youtube.com/channel/UCyDnvtdLOg6i8sSyDdhojpw ---
+[2026-07-02 15:57:00]     ✗ 실패 — ValueError: 채널 없음/비공개: UCyDnvtdLOg6i8sSyDdhojpw
+[2026-07-02 15:57:00] --- (37/71) https://www.youtube.com/channel/UCVX-mXQ_VPZR0UtULKC3X4g ---
+[2026-07-02 15:57:01]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 534/10000
+[2026-07-02 15:57:01] --- (38/71) https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC ---
+[2026-07-02 15:57:01]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC
+[2026-07-02 15:57:01] --- (39/71) https://www.youtube.com/channel/UCzhubqZ9NgXvsXfdPvP2rKQ ---
+[2026-07-02 15:57:02]     ✓ 성공 — 영상 7 · 신규 0 · 댓글 0 · 누적 쿼터 538/10000
+[2026-07-02 15:57:02] --- (40/71) https://www.youtube.com/channel/UCwrWQ31IxDRIUaHXomDovBQ?view_as=subscriber ---
+[2026-07-02 15:57:03]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 542/10000
+[2026-07-02 15:57:03] --- (41/71) https://www.youtube.com/channel/UCMq8kyrmn8OxtSBO69nwqjg ---
+[2026-07-02 15:57:04]     ✓ 성공 — 영상 38 · 신규 0 · 댓글 0 · 누적 쿼터 546/10000
+[2026-07-02 15:57:04] --- (42/71) https://www.youtube.com/channel/UCGbiBTo3_TRSug2v0uk8Zfw ---
+[2026-07-02 15:57:05]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 550/10000
+[2026-07-02 15:57:05] --- (43/71) https://www.youtube.com/channel/UCjPjA9XnTk4tXqpYVHMFVhA?view_as=subscriber ---
+[2026-07-02 15:57:07]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 554/10000
+[2026-07-02 15:57:07] --- (44/71) https://www.youtube.com/channel/UCZHa34QBonidr2xS6u2XENg ---
+[2026-07-02 15:57:08]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 558/10000
+[2026-07-02 15:57:08] --- (45/71) https://www.youtube.com/channel/UCdyMJIqh1eBk-6-Old099pQ ---
+[2026-07-02 15:57:09]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 660/10000
+[2026-07-02 15:57:09] --- (46/71) https://www.youtube.com/channel/UCXwx-NJkbHp1WaVzQuiS1ZQ?view_as=subscriber ---
+[2026-07-02 15:57:09]     ✗ 실패 — ValueError: 채널 없음/비공개: UCXwx-NJkbHp1WaVzQuiS1ZQ
+[2026-07-02 15:57:09] --- (47/71) https://www.youtube.com/channel/UCWbn0sBIlCVe0WERN1M-0-Q?view_as=subscriber ---
+[2026-07-02 15:57:10]     ✓ 성공 — 영상 4 · 신규 0 · 댓글 0 · 누적 쿼터 665/10000
+[2026-07-02 15:57:10] --- (48/71) http://www.youtube.com/channel/UCYt-IXLU-F_qQVV0dm5Q8WQ ---
+[2026-07-02 15:57:11]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 669/10000
+[2026-07-02 15:57:11] --- (49/71) https://www.youtube.com/@tsuki6439 ---
+[2026-07-02 15:57:12]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 674/10000
+[2026-07-02 15:57:12] --- (50/71) https://www.youtube.com/channel/UCS9aX77n6hzKqtE3Yd-moHg?view_as=subscriber ---
+[2026-07-02 15:57:13]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 678/10000
+[2026-07-02 15:57:13] --- (51/71) https://www.youtube.com/user/yeseuli1120 ---
+[2026-07-02 15:57:14]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 683/10000
+[2026-07-02 15:57:14] --- (52/71) https://www.youtube.com/channel/UCd_CnYXEADR_nqWuOrr_wGg ---
+[2026-07-02 15:57:15]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 687/10000
+[2026-07-02 15:57:15] --- (53/71) https://www.youtube.com/channel/UCb72-QSFmu82PpGwCpJvI7g?view_as=subscriber ---
+[2026-07-02 15:57:17]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 691/10000
+[2026-07-02 15:57:17] --- (54/71) https://www.youtube.com/channel/UC1dNo0e4h7ZnuZ3w2aajV5g?view_as=subscriber ---
+[2026-07-02 15:57:17]     ✓ 성공 — 영상 42 · 신규 0 · 댓글 0 · 누적 쿼터 694/10000
+[2026-07-02 15:57:17] --- (55/71) https://www.youtube.com/channel/UCWWGqdYjlmRhLL8up5D7CUg?view_as=subscriber ---
+[2026-07-02 15:57:19]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 698/10000
+[2026-07-02 15:57:19] --- (56/71) https://www.youtube.com/channel/UCtU07nsaAu4CgPV3emsUqWA?view_as=subscriber ---
+[2026-07-02 15:57:20]     ✓ 성공 — 영상 15 · 신규 0 · 댓글 0 · 누적 쿼터 702/10000
+[2026-07-02 15:57:20] --- (57/71) https://www.youtube.com/channel/UCSCogaMMoxrDe43Cx_kB9cQ ---
+[2026-07-02 15:57:20]     ✓ 성공 — 영상 11 · 신규 0 · 댓글 0 · 누적 쿼터 705/10000
+[2026-07-02 15:57:20] --- (58/71) https://www.youtube.com/channel/UCgQ6Kv981Rvo9zNKoaHggNQ ---
+[2026-07-02 15:57:21]     ✓ 성공 — 영상 18 · 신규 0 · 댓글 0 · 누적 쿼터 709/10000
+[2026-07-02 15:57:21] --- (59/71) https://www.youtube.com/channel/UCz7DgKcPSimQGV9j9R-DCiA?view_as=subscriber ---
+[2026-07-02 15:57:24]     ✓ 성공 — 영상 100 · 신규 0 · 댓글 0 · 누적 쿼터 715/10000
+[2026-07-02 15:57:24] --- (60/71) https://www.youtube.com/channel/UCHVbw9LHT2j--gnz5s_dBMA ---
+[2026-07-02 15:57:25]     ✓ 성공 — 영상 4 · 신규 0 · 댓글 0 · 누적 쿼터 719/10000
+[2026-07-02 15:57:25] --- (61/71) https://www.youtube.com/channel/UCTpLWbxrOLcO-mDZj0EQD5g?view_as=subscriber ---
+[2026-07-02 15:57:26]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 723/10000
+[2026-07-02 15:57:26] --- (62/71) https://www.youtube.com/channel/UCGj2z68bfqGSN3ndfHvjivA?view_as=subscriber ---
+[2026-07-02 15:57:26]     ✓ 성공 — 영상 9 · 신규 0 · 댓글 0 · 누적 쿼터 727/10000
+[2026-07-02 15:57:26] --- (63/71) https://www.youtube.com/channel/UC7mS4h1sbYv-eTnoi6pE5AQ ---
+[2026-07-02 15:57:27]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 829/10000
+[2026-07-02 15:57:27] --- (64/71) https://www.youtube.com/channel/UCscltv-x_wnkAT8KX0ES1bA ---
+[2026-07-02 15:57:28]     ✓ 성공 — 영상 19 · 신규 0 · 댓글 0 · 누적 쿼터 833/10000
+[2026-07-02 15:57:28] --- (65/71) https://www.youtube.com/channel/UC_VOIxjBN_WIPKxpPs1omZQ ---
+[2026-07-02 15:57:29]     ✓ 성공 — 영상 42 · 신규 0 · 댓글 0 · 누적 쿼터 836/10000
+[2026-07-02 15:57:29] --- (66/71) https://www.youtube.com/channel/누룽지누나 ---
+[2026-07-02 15:57:29]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/channel/누룽지누나
+[2026-07-02 15:57:29] --- (67/71) https://www.youtube.com/channel/UC7OO_36wX6727cIJUWm33Xg ---
+[2026-07-02 15:57:30]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 840/10000
+[2026-07-02 15:57:30] --- (68/71) https://youtube.com/@truewater_?si=5xjg6HTLEbG7WkmH ---
+[2026-07-02 15:57:31]     ✓ 성공 — 영상 14 · 신규 0 · 댓글 0 · 누적 쿼터 845/10000
+[2026-07-02 15:57:31] --- (69/71) https://www.youtube.com/channel/UCT3jVTX3vemagDK0M8l_u1g?view_as=subscriber ---
+[2026-07-02 15:57:32]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 947/10000
+[2026-07-02 15:57:32] --- (70/71) https://www.youtube.com/channel/UCceGFPQmfOAvnCrII8mkUQg?view_as=subscriber ---
+[2026-07-02 15:57:32]     ✗ 실패 — ValueError: 채널 없음/비공개: UCceGFPQmfOAvnCrII8mkUQg
+[2026-07-02 15:57:32] --- (71/71) https://www.youtube.com/channel/UCPPQmHLA6zMLC6PfbI56CFQ?view_as=subscriber ---
+[2026-07-02 15:57:32]     ✗ 실패 — ValueError: 채널 없음/비공개: UCPPQmHLA6zMLC6PfbI56CFQ
+[2026-07-02 15:57:32] ----- 지표 재계산 -----
+[2026-07-02 15:57:33]     ✓ 지표 재계산 완료
+[2026-07-02 15:57:33] ===== 배치 종료 — 성공 62 · 실패 9 · 건너뜀 0 · 성공률 87.3% · 총 쿼터 949 =====
+
+[2026-07-02 17:13:10] ===== 배치 시작 — 대상 71개 채널 =====
+[2026-07-02 17:13:10] --- (1/71) https://www.youtube.com/c/witching_tv ---
+[2026-07-02 17:13:11]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 5/10000
+[2026-07-02 17:13:11] --- (2/71) https://www.youtube.com/channel/UChIak7iW6qc_-whDOybqIpw ---
+[2026-07-02 17:13:12]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 9/10000
+[2026-07-02 17:13:12] --- (3/71) https://www.youtube.com/channel/UCotAy56nD6uxya3opvX7IBg ---
+[2026-07-02 17:13:13]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 13/10000
+[2026-07-02 17:13:13] --- (4/71) https://www.youtube.com/channel/UC0BqJvnq0FZcBUKGQTGFFwg?sub_confirmation=1 ---
+[2026-07-02 17:13:14]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 115/10000
+[2026-07-02 17:13:14] --- (5/71) https://www.youtube.com/channel/UCrik9F226RS8SozMbo45ofQ?view_as=subscriber ---
+[2026-07-02 17:13:15]     ✓ 성공 — 영상 25 · 신규 0 · 댓글 0 · 누적 쿼터 119/10000
+[2026-07-02 17:13:15] --- (6/71) https://www.youtube.com/channel/UCd1Q3-ZOi9rmtCJiGGJZ-ng?view_as=subscriber ---
+[2026-07-02 17:13:16]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 123/10000
+[2026-07-02 17:13:16] --- (7/71) https://www.youtube.com/channel/UCkkVe8okaSUNfBS5sxorrIQ?sub_confirmation=1 ---
+[2026-07-02 17:13:17]     ✓ 성공 — 영상 6 · 신규 0 · 댓글 0 · 누적 쿼터 127/10000
+[2026-07-02 17:13:17] --- (8/71) https://www.youtube.com/channel/UCizAD_gtbKrE6Sgajer_Lvg ---
+[2026-07-02 17:13:18]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 229/10000
+[2026-07-02 17:13:18] --- (9/71) https://www.youtube.com/channel/UCPsdKTSJmqP5pj9cIiKSNJw ---
+[2026-07-02 17:13:18]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 331/10000
+[2026-07-02 17:13:18] --- (10/71) https://www.youtube.com/channel/UCGuurERkbPnHhEkTZOq_WDw?view_as=subscriber ---
+[2026-07-02 17:13:19]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 335/10000
+[2026-07-02 17:13:19] --- (11/71) https://www.youtube.com/channel/UCGbspjBVI4zVVXQDrA0HrBg ---
+[2026-07-02 17:13:21]     ✓ 성공 — 영상 65 · 신규 0 · 댓글 0 · 누적 쿼터 340/10000
+[2026-07-02 17:13:21] --- (12/71) https://www.youtube.com/channel/UCK-KsPKDFDN6AqM5IL1q2dw ---
+[2026-07-02 17:13:22]     ✓ 성공 — 영상 5 · 신규 0 · 댓글 0 · 누적 쿼터 344/10000
+[2026-07-02 17:13:22] --- (13/71) https://www.youtube.com/channel/UCHzre37UF4o64HRhp-7CDzQ?view_as=subscriber ---
+[2026-07-02 17:13:22]     ✓ 성공 — 영상 22 · 신규 0 · 댓글 0 · 누적 쿼터 347/10000
+[2026-07-02 17:13:22] --- (14/71) https://www.youtube.com/user/ChaeHwaRyung ---
+[2026-07-02 17:13:23]     ✓ 성공 — 영상 21 · 신규 0 · 댓글 0 · 누적 쿼터 351/10000
+[2026-07-02 17:13:23] --- (15/71) https://www.youtube.com/channel/UCc_nVsXbC8trjXLqcwmhiYg ---
+[2026-07-02 17:13:25]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 355/10000
+[2026-07-02 17:13:25] --- (16/71) https://www.youtube.com/channel/UC1UecqDtqdiyxmUy9I-13Ug ---
+[2026-07-02 17:13:25]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 359/10000
+[2026-07-02 17:13:25] --- (17/71) https://www.youtube.com/@MaNyeo919 ---
+[2026-07-02 17:13:26]     ✓ 성공 — 영상 25 · 신규 0 · 댓글 0 · 누적 쿼터 363/10000
+[2026-07-02 17:13:26] --- (18/71) https://www.youtube.com/channel/UChwgTbkzxm5kEkUTTY4b_xg?view_as=subscriber ---
+[2026-07-02 17:13:27]     ✓ 성공 — 영상 22 · 신규 0 · 댓글 0 · 누적 쿼터 366/10000
+[2026-07-02 17:13:27] --- (19/71) https://www.youtube.com/channel/UC9a1MhaaUhq90C2yXOp_6kg?view_as=subscriber ---
+[2026-07-02 17:13:28]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 370/10000
+[2026-07-02 17:13:28] --- (20/71) https://www.youtube.com/channel/UCzGLREERrTx7SbavlsXEa-g ---
+[2026-07-02 17:13:29]     ✓ 성공 — 영상 35 · 신규 0 · 댓글 0 · 누적 쿼터 374/10000
+[2026-07-02 17:13:29] --- (21/71) https://www.youtube.com/channel/UCuRq-One6Q7nG_cH_K0-Dlw ---
+[2026-07-02 17:13:29]     ✗ 실패 — ValueError: 채널 없음/비공개: UCuRq-One6Q7nG_cH_K0-Dlw
+[2026-07-02 17:13:29] --- (22/71) https://www.youtube.com/channel/UCCuBQw7DUzNt42vJ7gBU48g ---
+[2026-07-02 17:13:30]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 379/10000
+[2026-07-02 17:13:30] --- (23/71) https://www.youtube.com/channel/UCdQ3wsEF_fRdRwWnTAR37nw?view_as=subscriber ---
+[2026-07-02 17:13:32]     ✓ 성공 — 영상 85 · 신규 0 · 댓글 0 · 누적 쿼터 384/10000
+[2026-07-02 17:13:32] --- (24/71) https://www.youtube.com/channel/UCiussJfR1Z7PbfrslnAFLnA?view_as=subscriber ---
+[2026-07-02 17:13:32]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 388/10000
+[2026-07-02 17:13:32] --- (25/71) https://www.youtube.com/channel/UCB9qbnWt-qSgoyBIvmm72wA?view_as=subscriber ---
+[2026-07-02 17:13:33]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 392/10000
+[2026-07-02 17:13:33] --- (26/71) https://www.youtube.com/channel/UCIEMWENVckuQEVfDXC3OJ8g?view_as=subscriber ---
+[2026-07-02 17:13:34]     ✓ 성공 — 영상 3 · 신규 0 · 댓글 0 · 누적 쿼터 396/10000
+[2026-07-02 17:13:34] --- (27/71) https://www.youtube.com/channel/UCGYi6fNKgnxLCk85xskEwaQ?view_as=subscriber ---
+[2026-07-02 17:13:35]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 400/10000
+[2026-07-02 17:13:35] --- (28/71) https://www.youtube.com/channel/UCac_cr3_26_MVb1oxK6nEWw ---
+[2026-07-02 17:13:37]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 404/10000
+[2026-07-02 17:13:37] --- (29/71) https://www.youtube.com/@%EB%BF%8C%EB%8B%B9 ---
+[2026-07-02 17:13:37]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/@%EB%BF%8C%EB%8B%B9
+[2026-07-02 17:13:37] --- (30/71) https://www.youtube.com/channel/UCjUC-V0tYOR4w9KGBbIHPiw?view_as=subscriber ---
+[2026-07-02 17:13:37]     ✗ 실패 — ValueError: 채널 없음/비공개: UCjUC-V0tYOR4w9KGBbIHPiw
+[2026-07-02 17:13:37] --- (31/71) https://www.youtube.com/channel/UCeagfNQQZIQwA03Gvg4NPIA?view_as=subscriber ---
+[2026-07-02 17:13:38]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 409/10000
+[2026-07-02 17:13:38] --- (32/71) https://www.youtube.com/channel/UCcwH6HiWH2m2-WrLcaQdt-Q ---
+[2026-07-02 17:13:38]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 511/10000
+[2026-07-02 17:13:38] --- (33/71) https://www.youtube.com/channel/UCb3SVAhTckLKU_8DW3ihxcg ---
+[2026-07-02 17:13:39]     ✓ 성공 — 영상 5 · 신규 0 · 댓글 0 · 누적 쿼터 515/10000
+[2026-07-02 17:13:39] --- (34/71) https://www.youtube.com/@Luiten98 ---
+[2026-07-02 17:13:41]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 520/10000
+[2026-07-02 17:13:41] --- (35/71) https://www.youtube.com/channel/UC8Vf_IumBrxx5b0XlOAVBZA?view_as=subscriber ---
+[2026-07-02 17:13:43]     ✓ 성공 — 영상 120 · 신규 0 · 댓글 0 · 누적 쿼터 527/10000
+[2026-07-02 17:13:43] --- (36/71) https://www.youtube.com/channel/UCyDnvtdLOg6i8sSyDdhojpw ---
+[2026-07-02 17:13:43]     ✗ 실패 — ValueError: 채널 없음/비공개: UCyDnvtdLOg6i8sSyDdhojpw
+[2026-07-02 17:13:43] --- (37/71) https://www.youtube.com/channel/UCVX-mXQ_VPZR0UtULKC3X4g ---
+[2026-07-02 17:13:43]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 532/10000
+[2026-07-02 17:13:43] --- (38/71) https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC ---
+[2026-07-02 17:13:43]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/@%ED%99%94%EB%A5%98%ED%98%BC
+[2026-07-02 17:13:43] --- (39/71) https://www.youtube.com/channel/UCzhubqZ9NgXvsXfdPvP2rKQ ---
+[2026-07-02 17:13:44]     ✓ 성공 — 영상 7 · 신규 0 · 댓글 0 · 누적 쿼터 536/10000
+[2026-07-02 17:13:44] --- (40/71) https://www.youtube.com/channel/UCwrWQ31IxDRIUaHXomDovBQ?view_as=subscriber ---
+[2026-07-02 17:13:45]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 540/10000
+[2026-07-02 17:13:45] --- (41/71) https://www.youtube.com/channel/UCMq8kyrmn8OxtSBO69nwqjg ---
+[2026-07-02 17:13:46]     ✓ 성공 — 영상 38 · 신규 0 · 댓글 0 · 누적 쿼터 544/10000
+[2026-07-02 17:13:46] --- (42/71) https://www.youtube.com/channel/UCGbiBTo3_TRSug2v0uk8Zfw ---
+[2026-07-02 17:13:47]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 548/10000
+[2026-07-02 17:13:47] --- (43/71) https://www.youtube.com/channel/UCjPjA9XnTk4tXqpYVHMFVhA?view_as=subscriber ---
+[2026-07-02 17:13:48]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 552/10000
+[2026-07-02 17:13:48] --- (44/71) https://www.youtube.com/channel/UCZHa34QBonidr2xS6u2XENg ---
+[2026-07-02 17:13:49]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 556/10000
+[2026-07-02 17:13:49] --- (45/71) https://www.youtube.com/channel/UCdyMJIqh1eBk-6-Old099pQ ---
+[2026-07-02 17:13:50]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 658/10000
+[2026-07-02 17:13:50] --- (46/71) https://www.youtube.com/channel/UCXwx-NJkbHp1WaVzQuiS1ZQ?view_as=subscriber ---
+[2026-07-02 17:13:50]     ✗ 실패 — ValueError: 채널 없음/비공개: UCXwx-NJkbHp1WaVzQuiS1ZQ
+[2026-07-02 17:13:50] --- (47/71) https://www.youtube.com/channel/UCWbn0sBIlCVe0WERN1M-0-Q?view_as=subscriber ---
+[2026-07-02 17:13:51]     ✓ 성공 — 영상 4 · 신규 0 · 댓글 0 · 누적 쿼터 663/10000
+[2026-07-02 17:13:51] --- (48/71) http://www.youtube.com/channel/UCYt-IXLU-F_qQVV0dm5Q8WQ ---
+[2026-07-02 17:13:52]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 667/10000
+[2026-07-02 17:13:52] --- (49/71) https://www.youtube.com/@tsuki6439 ---
+[2026-07-02 17:13:53]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 672/10000
+[2026-07-02 17:13:53] --- (50/71) https://www.youtube.com/channel/UCS9aX77n6hzKqtE3Yd-moHg?view_as=subscriber ---
+[2026-07-02 17:13:54]     ✓ 성공 — 영상 1 · 신규 0 · 댓글 0 · 누적 쿼터 676/10000
+[2026-07-02 17:13:54] --- (51/71) https://www.youtube.com/user/yeseuli1120 ---
+[2026-07-02 17:13:55]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 681/10000
+[2026-07-02 17:13:55] --- (52/71) https://www.youtube.com/channel/UCd_CnYXEADR_nqWuOrr_wGg ---
+[2026-07-02 17:13:57]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 685/10000
+[2026-07-02 17:13:57] --- (53/71) https://www.youtube.com/channel/UCb72-QSFmu82PpGwCpJvI7g?view_as=subscriber ---
+[2026-07-02 17:13:58]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 689/10000
+[2026-07-02 17:13:58] --- (54/71) https://www.youtube.com/channel/UC1dNo0e4h7ZnuZ3w2aajV5g?view_as=subscriber ---
+[2026-07-02 17:13:58]     ✓ 성공 — 영상 42 · 신규 0 · 댓글 0 · 누적 쿼터 692/10000
+[2026-07-02 17:13:58] --- (55/71) https://www.youtube.com/channel/UCWWGqdYjlmRhLL8up5D7CUg?view_as=subscriber ---
+[2026-07-02 17:13:59]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 696/10000
+[2026-07-02 17:13:59] --- (56/71) https://www.youtube.com/channel/UCtU07nsaAu4CgPV3emsUqWA?view_as=subscriber ---
+[2026-07-02 17:14:00]     ✓ 성공 — 영상 15 · 신규 0 · 댓글 0 · 누적 쿼터 700/10000
+[2026-07-02 17:14:00] --- (57/71) https://www.youtube.com/channel/UCSCogaMMoxrDe43Cx_kB9cQ ---
+[2026-07-02 17:14:01]     ✓ 성공 — 영상 11 · 신규 0 · 댓글 0 · 누적 쿼터 703/10000
+[2026-07-02 17:14:01] --- (58/71) https://www.youtube.com/channel/UCgQ6Kv981Rvo9zNKoaHggNQ ---
+[2026-07-02 17:14:02]     ✓ 성공 — 영상 18 · 신규 0 · 댓글 0 · 누적 쿼터 707/10000
+[2026-07-02 17:14:02] --- (59/71) https://www.youtube.com/channel/UCz7DgKcPSimQGV9j9R-DCiA?view_as=subscriber ---
+[2026-07-02 17:14:04]     ✓ 성공 — 영상 100 · 신규 0 · 댓글 0 · 누적 쿼터 713/10000
+[2026-07-02 17:14:04] --- (60/71) https://www.youtube.com/channel/UCHVbw9LHT2j--gnz5s_dBMA ---
+[2026-07-02 17:14:05]     ✓ 성공 — 영상 4 · 신규 0 · 댓글 0 · 누적 쿼터 717/10000
+[2026-07-02 17:14:05] --- (61/71) https://www.youtube.com/channel/UCTpLWbxrOLcO-mDZj0EQD5g?view_as=subscriber ---
+[2026-07-02 17:14:06]     ✓ 성공 — 영상 50 · 신규 0 · 댓글 0 · 누적 쿼터 721/10000
+[2026-07-02 17:14:06] --- (62/71) https://www.youtube.com/channel/UCGj2z68bfqGSN3ndfHvjivA?view_as=subscriber ---
+[2026-07-02 17:14:07]     ✓ 성공 — 영상 9 · 신규 0 · 댓글 0 · 누적 쿼터 725/10000
+[2026-07-02 17:14:07] --- (63/71) https://www.youtube.com/channel/UC7mS4h1sbYv-eTnoi6pE5AQ ---
+[2026-07-02 17:14:07]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 827/10000
+[2026-07-02 17:14:07] --- (64/71) https://www.youtube.com/channel/UCscltv-x_wnkAT8KX0ES1bA ---
+[2026-07-02 17:14:08]     ✓ 성공 — 영상 19 · 신규 0 · 댓글 0 · 누적 쿼터 831/10000
+[2026-07-02 17:14:08] --- (65/71) https://www.youtube.com/channel/UC_VOIxjBN_WIPKxpPs1omZQ ---
+[2026-07-02 17:14:09]     ✓ 성공 — 영상 42 · 신규 0 · 댓글 0 · 누적 쿼터 834/10000
+[2026-07-02 17:14:09] --- (66/71) https://www.youtube.com/channel/누룽지누나 ---
+[2026-07-02 17:14:09]     ✗ 실패 — ValueError: 채널 ID를 못 찾음: https://www.youtube.com/channel/누룽지누나
+[2026-07-02 17:14:09] --- (67/71) https://www.youtube.com/channel/UC7OO_36wX6727cIJUWm33Xg ---
+[2026-07-02 17:14:09]     ✓ 성공 — 영상 2 · 신규 0 · 댓글 0 · 누적 쿼터 838/10000
+[2026-07-02 17:14:09] --- (68/71) https://youtube.com/@truewater_?si=5xjg6HTLEbG7WkmH ---
+[2026-07-02 17:14:10]     ✓ 성공 — 영상 14 · 신규 0 · 댓글 0 · 누적 쿼터 843/10000
+[2026-07-02 17:14:10] --- (69/71) https://www.youtube.com/channel/UCT3jVTX3vemagDK0M8l_u1g?view_as=subscriber ---
+[2026-07-02 17:14:11]     ✓ 성공 — 영상 0 · 신규 0 · 댓글 0 · 누적 쿼터 945/10000
+[2026-07-02 17:14:11] --- (70/71) https://www.youtube.com/channel/UCceGFPQmfOAvnCrII8mkUQg?view_as=subscriber ---
+[2026-07-02 17:14:11]     ✗ 실패 — ValueError: 채널 없음/비공개: UCceGFPQmfOAvnCrII8mkUQg
+[2026-07-02 17:14:11] --- (71/71) https://www.youtube.com/channel/UCPPQmHLA6zMLC6PfbI56CFQ?view_as=subscriber ---
+[2026-07-02 17:14:11]     ✗ 실패 — ValueError: 채널 없음/비공개: UCPPQmHLA6zMLC6PfbI56CFQ
+[2026-07-02 17:14:11] ----- 변경된 데이터 없음 → 지표 계산 생략 -----
+[2026-07-02 17:14:11] ===== 배치 종료 — 성공 62 · 실패 9 · 건너뜀 0 · 성공률 87.3% · 총 쿼터 947 =====
+

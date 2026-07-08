@@ -1,0 +1,249 @@
+import asyncio
+import json
+import re
+import pymysql
+from datetime import datetime, timezone, timedelta
+from playwright.async_api import async_playwright
+
+# ==========================================
+# 환경 설정
+# ==========================================
+DB = dict(host="127.0.0.1", port=3306, user="root", password="",
+          database="fandom_crm", charset="utf8mb4")
+
+# 테스트용 설정: 먼저 2~3개 채널만 돌려서 팬 추적 로직을 검증하세요.
+# 전체 33개 채널을 실전으로 수집하려면 이 값을 None으로 변경하세요.
+TEST_CHANNELS = None      
+
+VIDEOS_PER_CHANNEL = 15
+MAX_SCROLLS = 20
+
+# ==========================================
+# 유틸리티 함수
+# ==========================================
+def parse_relative_date(text, now=None):
+    if now is None:
+        now = datetime.now()
+    if not text:
+        return None
+    m = re.search(r"(\d+)\s*(초|분|시간|일|주|개월|년)", text)
+    if m:
+        n, unit = int(m.group(1)), m.group(2)
+        days = {"초":0,"분":0,"시간":0,"일":1,"주":7,"개월":30,"년":365}
+        return now - timedelta(days=n * days.get(unit, 0))
+    return None
+
+
+def find_payloads(obj, results=None):
+    if results is None:
+        results = []
+    if isinstance(obj, dict):
+        if "commentEntityPayload" in obj:
+            results.append(obj["commentEntityPayload"])
+        for v in obj.values():
+            find_payloads(v, results)
+    elif isinstance(obj, list):
+        for v in obj:
+            find_payloads(v, results)
+    return results
+
+# [핵심 최적화 1] 브라우저 렌더링 리소스 차단 (속도 대폭 향상)
+async def block_resources(route):
+    if route.request.resource_type in ["image", "media", "font"]:
+        await route.abort()
+    else:
+        await route.continue_()
+
+# ==========================================
+# 크롤링 코어
+# ==========================================
+async def scrape_comments(page, video_id):
+    """영상 1개 댓글 긁기. (댓글 리스트, 응답수) 반환."""
+    seen = []
+    def on_resp(response):
+        if "youtubei/v1/next" in response.url:
+            asyncio.create_task(_grab(response, seen))
+    async def _grab(response, seen):
+        try:
+            seen.append(await response.json())
+        except Exception:
+            pass
+
+    page.on("response", on_resp)
+    await page.goto(f"https://www.youtube.com/watch?v={video_id}&hl=ko&gl=KR")
+    
+    # [핵심 최적화 2] 대기 시간 소폭 단축 (안전성 유지 선에서 타협)
+    await page.wait_for_timeout(2000) 
+    try:
+        await page.click("button[aria-label*='모두 수락']", timeout=2000)
+    except Exception:
+        pass
+    
+    await page.evaluate("window.scrollTo(0, 600)")
+    await page.wait_for_timeout(1500)
+
+    comments = {}
+    last, stable = -1, 0
+    for i in range(MAX_SCROLLS):
+        await page.evaluate("window.scrollBy(0, 800)")
+        await page.wait_for_timeout(1500) # 기존 1800 -> 1500으로 단축
+        
+        for data in seen:
+            for pl in find_payloads(data):
+                cid = pl.get("properties", {}).get("commentId", "")
+                if cid:
+                    comments[cid] = pl
+                    
+        if len(comments) == last and len(comments) > 0:
+            stable += 1
+            if stable >= 3:
+                break
+        elif len(comments) == 0 and i >= 5:
+            break   # 5번 스크롤해도 댓글 0 → 댓글 없는 영상
+        else:
+            stable = 0
+        last = len(comments)
+
+    page.remove_listener("response", on_resp)
+    return list(comments.values())
+
+# ==========================================
+# DB 적재
+# ==========================================
+def save_comments(conn, content_id, payloads):
+    now = datetime.now()
+    saved = 0
+    with conn.cursor() as cur:
+        for pl in payloads:
+            props = pl.get("properties", {})
+            author = pl.get("author", {})
+            toolbar = pl.get("toolbar", {})
+
+            uc = author.get("channelId")
+            if not uc:
+                continue
+            comment_id = props.get("commentId", "")
+            text = props.get("content", {}).get("content", "")
+            name = author.get("displayName")
+            like_raw = toolbar.get("likeCountNotliked", "0")
+            like = int(re.sub(r"[^\d]", "", str(like_raw)) or 0)
+            pub = parse_relative_date(props.get("publishedTime"), now)
+
+            # [DB 최적화 1] fan UPSERT (LAST_INSERT_ID 활용)
+            cur.execute("""
+                INSERT INTO fans (platform, external_author_id, first_seen_at, last_seen_at)
+                VALUES ('youtube', %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                    last_seen_at = VALUES(last_seen_at),
+                    fan_id = LAST_INSERT_ID(fan_id)
+            """, (uc, now, now))
+            fan_id = cur.lastrowid 
+
+            # [DB 최적화 2] comments 중복 방지 방어 코드 적용
+            cur.execute("""
+                INSERT INTO comments
+                  (content_id, fan_id, external_comment_id, author_display_name,
+                   comment_text, like_count, published_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                  like_count = VALUES(like_count),
+                  author_display_name = VALUES(author_display_name),
+                  comment_text = VALUES(comment_text)
+            """, (content_id, fan_id, comment_id, name, text, like, pub))
+            saved += 1
+    return saved
+
+# ==========================================
+# 메인 실행부
+# ==========================================
+async def main():
+    conn = pymysql.connect(**DB, autocommit=True)
+
+    with conn.cursor() as cur:
+        # Resume 기능 최적화: crawl_logs를 기준으로 타겟 채널 선정
+        sql = """
+SELECT
+    ch.channel_id,
+    cr.nickname,
+    ch.channel_url_normalized
+FROM channels ch
+JOIN creators cr
+    ON ch.creator_id = cr.creator_id
+WHERE ch.platform='youtube'
+  AND ch.channel_id NOT IN (
+      SELECT channel_id FROM crawl_logs
+      WHERE channel_id IS NOT NULL AND layer='L3' AND status='success'
+  )
+"""
+
+        if TEST_CHANNELS is None:
+            cur.execute(sql)
+        else:
+            cur.execute(sql + " LIMIT %s", (TEST_CHANNELS,))
+
+        channels = cur.fetchall()
+
+    mode = "테스트 모드" if TEST_CHANNELS else "전체 실행 모드"
+    print(f"[{mode}] 수집 대상 남은 채널: {len(channels)}개")
+
+    async with async_playwright() as p:
+
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        
+        # 브라우저 전역에 리소스 차단 로직 적용
+        await page.route("**/*", block_resources)
+
+        for channel_id, nickname, channel_url in channels:
+
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT
+                        content_id,
+                        external_id
+                    FROM contents
+                    WHERE channel_id=%s
+                      AND content_type='video'
+                    ORDER BY published_at DESC
+                    LIMIT %s
+                """, (channel_id, VIDEOS_PER_CHANNEL))
+
+                videos = cur.fetchall()
+
+            print(f"\n=== {nickname} (ch={channel_id}) 영상 {len(videos)}개 시작 ===")
+
+            ch_comments = 0
+
+            for content_id, video_id in videos:
+                # [오류 방어 코드 추가] 특정 영상 타임아웃 시 건너뛰기
+                try:
+                    payloads = await scrape_comments(page, video_id)
+                    n = save_comments(conn, content_id, payloads)
+                    ch_comments += n
+                    print(f"  {video_id}: 댓글 {n}개 수집")
+                except Exception as e:
+                    print(f"  [타임아웃/에러] {video_id} 건너뜀 (오류: {e})")
+                    # 페이지가 먹통이 되는 것을 방지하기 위해 빈 페이지로 리셋
+                    try:
+                        await page.goto("about:blank")
+                    except:
+                        pass
+
+            # 에러 해결: crawl_logs INSERT 시 target_url 무조건 저장
+            with conn.cursor() as cur:
+                safe_target_url = channel_url if channel_url else f"https://www.youtube.com/channel/{channel_id}"
+                cur.execute("""
+                    INSERT INTO crawl_logs
+                    (channel_id, target_url, layer, status, http_status)
+                    VALUES (%s, %s, 'L3', 'success', 200)
+                """, (channel_id, safe_target_url))
+
+            print(f"  → [완료] {nickname} 총 {ch_comments}개 댓글 수집 및 로그 기록 성공")
+
+        await browser.close()
+
+    conn.close()
+    print("\n모든 작업이 완료되었습니다.")
+
+if __name__ == "__main__":
+    asyncio.run(main())
