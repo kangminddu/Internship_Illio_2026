@@ -2,14 +2,7 @@ import pymysql
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-DB = dict(
-    host="127.0.0.1",
-    port=3306,
-    user="root",
-    password="",
-    database="fandom_crm",
-    charset="utf8mb4",
-)
+from config import DB
 
 def trimmed_mean(values, trim_ratio=0.1):
     vals = [float(v) for v in values if v is not None]

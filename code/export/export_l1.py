@@ -5,14 +5,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-DB = dict(
-    host="127.0.0.1",
-    port=3306,
-    user="root",
-    password="",
-    database="fandom_crm",
-    charset="utf8mb4"
-)
+from config import DB
 
 sql = """
 SELECT

@@ -1,8 +1,7 @@
 import pymysql
 from datetime import datetime, timezone
 
-DB = dict(host="127.0.0.1", port=3306, user="root", password="",
-          database="fandom_crm", charset="utf8mb4")
+from config import DB
 
 conn = pymysql.connect(**DB, autocommit=True)
 
