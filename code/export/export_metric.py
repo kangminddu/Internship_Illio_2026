@@ -39,11 +39,11 @@ AVG(cs.like_count) AS avg_like,
 
 AVG(cs.comment_count) AS avg_comment,
 
-m.commenter_overlap_rate,
+MAX(m.commenter_overlap_rate) AS commenter_overlap_rate,
 
-m.regular_commenter_count,
+MAX(m.regular_commenter_count) AS regular_commenter_count,
 
-m.avg_comment_length
+MAX(m.avg_comment_length) AS avg_comment_length
 
 FROM creators cr
 

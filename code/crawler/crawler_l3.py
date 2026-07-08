@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import json
 import re
@@ -157,30 +158,42 @@ def save_comments(conn, content_id, payloads):
 # ==========================================
 # 메인 실행부
 # ==========================================
-async def main():
+async def main(channel_id=None):
     conn = pymysql.connect(**DB, autocommit=True)
 
     with conn.cursor() as cur:
         # Resume 기능 최적화: crawl_logs를 기준으로 타겟 채널 선정
         sql = """
-SELECT
-    ch.channel_id,
-    cr.nickname,
-    ch.channel_url_normalized
-FROM channels ch
-JOIN creators cr
-    ON ch.creator_id = cr.creator_id
-WHERE ch.platform='youtube'
-  AND ch.channel_id NOT IN (
-      SELECT channel_id FROM crawl_logs
-      WHERE channel_id IS NOT NULL AND layer='L3' AND status='success'
-  )
-"""
+        SELECT
+            ch.channel_id,
+            cr.nickname,
+            ch.channel_url_normalized
+        FROM channels ch
+        JOIN creators cr
+            ON ch.creator_id = cr.creator_id
+        WHERE ch.platform='youtube'
+        """
 
-        if TEST_CHANNELS is None:
-            cur.execute(sql)
+        params = []
+
+        if channel_id is None:
+            sql += """
+            AND ch.channel_id NOT IN (
+                SELECT channel_id
+                FROM crawl_logs
+                WHERE channel_id IS NOT NULL
+                AND layer='L3'
+                AND status='success'
+            )
+            """
         else:
-            cur.execute(sql + " LIMIT %s", (TEST_CHANNELS,))
+            sql += " AND ch.channel_id=%s"
+            params.append(channel_id)
+            
+        if TEST_CHANNELS is None:
+            cur.execute(sql, params)
+        else:
+            cur.execute(sql + " LIMIT %s", params + [TEST_CHANNELS])
 
         channels = cur.fetchall()
 
@@ -247,4 +260,11 @@ WHERE ch.platform='youtube'
     print("\n모든 작업이 완료되었습니다.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--channel",
+        type=int,
+        help="Run L3 for one channel only"
+    )
+    args = parser.parse_args()
+    asyncio.run(main(channel_id=args.channel))

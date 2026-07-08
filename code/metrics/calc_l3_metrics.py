@@ -92,23 +92,26 @@ with conn.cursor() as cur:
             loyalty = None
 
         # channel_metrics 업데이트 (기존 행에 L3 지표 추가)
+        # channel_metrics 업데이트 (없으면 새로 INSERT, 있으면 UPDATE)
         cur.execute("""
-        UPDATE channel_metrics
-        SET
-            commenter_overlap_rate=%s,
-            regular_commenter_count=%s,
-            avg_comment_length=%s,
-            loyalty_score=%s,
-            calculated_at=%s
-        WHERE channel_id=%s
+        INSERT INTO channel_metrics (
+            channel_id, commenter_overlap_rate, regular_commenter_count, 
+            avg_comment_length, loyalty_score, calculated_at
+        ) VALUES (%s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            commenter_overlap_rate = VALUES(commenter_overlap_rate),
+            regular_commenter_count = VALUES(regular_commenter_count),
+            avg_comment_length = VALUES(avg_comment_length),
+            loyalty_score = VALUES(loyalty_score),
+            calculated_at = VALUES(calculated_at)
         """,
         (
-            round(float(overlap_rate),2),
+            channel_id,
+            round(float(overlap_rate), 2),
             int(regular_commenters),
-            round(float(avg_len),1),
-            round(float(loyalty),4) if loyalty is not None else None,
-            datetime.now(),
-            channel_id
+            round(float(avg_len), 1),
+            round(float(loyalty), 4) if loyalty is not None else None,
+            datetime.now()
         ))
 
         print(f"{nickname}: 영상{video_count} 팬{total_fans} "

@@ -1,17 +1,11 @@
+import argparse
+import os
 import re
 import pymysql
 from openpyxl import load_workbook
 
-DB = dict(
-    host="127.0.0.1",
-    port=3306,
-    user="root",
-    password="",
-    database="fandom_crm",
-    charset="utf8mb4"
-)
+from config import DB
 
-XLSX = "/Users/kangminsoo/Desktop/Internship_Illio_2026/SNS_정보.xlsx"
 
 
 def normalize_url(url):
@@ -44,10 +38,17 @@ def classify_url(url):
     return "unresolved", url, None
 
 
-def main():
-    wb = load_workbook(XLSX, read_only=True)
+def main(xlsx_path):
+    wb = load_workbook(xlsx_path, read_only=True)
     ws = wb["Sheet2"]
-    rows = list(ws.iter_rows(values_only=True))[1:]
+    rows = list(ws.iter_rows(values_only=True))
+
+    headers = rows[0]
+    rows = rows[1:]
+
+    idx_name = headers.index("상품명 2")
+    idx_agency = headers.index("소속")
+    idx_url = headers.index("유튜브")
     print(f"Sheet2 데이터 {len(rows)}행\n")
 
     conn = pymysql.connect(**DB, autocommit=True)
@@ -56,9 +57,9 @@ def main():
 
     with conn.cursor() as cur:
         for i, row in enumerate(rows, 1):
-            name = row[0]
-            agency = row[1]
-            url = row[2]
+            name = row[idx_name]
+            agency = row[idx_agency]
+            url = row[idx_url]
 
             if not name:
                 continue
@@ -106,7 +107,16 @@ def main():
                     external_channel_id,
                     is_primary
                 )
-                VALUES (%s, 'youtube', %s, %s, %s, %s, 1)
+                VALUES
+                (
+                    %s,'youtube',%s,%s,%s,%s,1
+                )
+                ON DUPLICATE KEY UPDATE
+                    creator_id = VALUES(creator_id),
+                    channel_url_normalized = VALUES(channel_url_normalized),
+                    channel_id_status = VALUES(channel_id_status),
+                    external_channel_id = VALUES(external_channel_id),
+                    is_primary = VALUES(is_primary)
             """, (
                 creator_id,
                 str(url).strip(),
@@ -132,4 +142,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="YouTube Seed Loader"
+    )
+
+    parser.add_argument(
+        "--file",
+        required=True,
+        help="Seed Excel (.xlsx)"
+    )
+
+    args = parser.parse_args()
+
+    if not os.path.exists(args.file):
+        raise FileNotFoundError(args.file)
+
+    main(args.file)
