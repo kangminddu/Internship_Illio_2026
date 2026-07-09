@@ -267,7 +267,7 @@ df = df[
 # Excel 저장
 # =====================================
 
-filename = os.path.join(EXPORT_DIR, "파생지표.xlsx")
+filename = os.path.join(EXPORT_DIR, "파생지표_포카챠.xlsx")
 
 df.to_excel(
     filename,
