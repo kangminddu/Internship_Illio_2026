@@ -8,3 +8,10 @@ output/
 logs/
 *.json
 *.pdf
+
+# TikTok 크롤링 잔여물/덤프 (재생성 가능, 커밋 제외)
+nba.html
+tiktok_profile/
+tiktok/output/
+tiktok/session/
+tiktok/**/*.html
