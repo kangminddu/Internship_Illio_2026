@@ -58,10 +58,12 @@ def process_channel(channel):
                         UPDATE contents SET category=%s,
                           published_at=COALESCE(%s, published_at),
                           published_is_approx=IF(%s IS NULL, published_is_approx, 0),
-                          duration_sec = %s
+                          duration_sec = %s,
+                          is_paid_promotion = %s
                         WHERE content_id=%s
                     """, (result["category"], result["published_at"],
-                          result["published_at"], result.get("duration_sec"), content_id))
+                          result["published_at"], result.get("duration_sec"),
+                          result.get("is_paid_promotion", False), content_id))
 
                     # [최적화] content_snapshots 테이블 UPSERT (중복 방지)
                     cur.execute("""

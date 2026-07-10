@@ -4,7 +4,7 @@ import pymysql
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta
 
-from crawler.lib.youtube_parser import get_session, extract_yt_initial_data, parse_l2_videos
+from crawler.lib.youtube_parser import get_session, extract_yt_initial_data, parse_l2_videos, parse_l2_shorts
 
 from config import DB, L2A_WORKERS, L2A_DELAY
 BATCH_LIMIT = None
@@ -51,6 +51,18 @@ def fetch_videos(crawl_url):
     if data is None:
         return None, resp.status_code
     return parse_l2_videos(data), 200
+
+
+def fetch_shorts(crawl_url):
+    base = crawl_url.rstrip("/")
+    url = base + "/shorts?hl=ko&gl=KR"
+    resp = get_session().get(url, timeout=20)
+    if resp.status_code != 200:
+        return None, resp.status_code
+    data = extract_yt_initial_data(resp.text)
+    if data is None:
+        return None, resp.status_code
+    return parse_l2_shorts(data), 200
 
 
 def process_one(channel):
@@ -104,7 +116,58 @@ def process_one(channel):
                         VALUES (%s, %s, %s)
                         ON DUPLICATE KEY UPDATE view_count=VALUES(view_count)
                     """, (content_id, datetime.now(timezone.utc), v.get("view_count")))
-
+                # -----------------------------
+                # Shorts 수집
+                # -----------------------------
+                try:
+                    shorts, s_code = fetch_shorts(crawl_url)
+                except Exception:
+                    shorts, s_code = None, None
+                if shorts:
+                    for sv in shorts:
+                        if not sv.get("video_id"):
+                            continue
+                        cur.execute("""
+                                    INSERT INTO contents
+                                    (channel_id, external_id, content_type, published_at,
+                                    published_relative, published_is_approx, duration_sec, caption_text)
+                                    VALUES (%s, %s, 'shorts', %s, %s, 1, %s, %s)
+                                    ON DUPLICATE KEY UPDATE
+                                    published_relative = VALUES(published_relative),
+                                    duration_sec = VALUES(duration_sec)
+                                    """, (
+                                        channel_id,
+                                        sv["video_id"],
+                                        sv.get("published_at_approx"),
+                                        sv.get("published_relative"),
+                                        sv.get("duration_sec"),
+                                        (sv.get("title") or "")[:2000],
+                                    ))
+                        cur.execute(
+                            """"
+                            SELECT content_id
+                            FROM contents
+                            WHERE channel_id=%s
+                            AND external_id=%s
+                            """,
+                            (channel_id, sv["video_id"]),
+                            )
+                        row = cur.fetchone()
+                        if not row:
+                            continue
+                        content_id = row[0]
+                        cur.execute("""
+                                    INSERT INTO content_snapshots
+                                    (content_id, captured_at, view_count)
+                                    VALUES(%s, %s, %s)
+                                    ON DUPLICATE KEY UPDATE
+                                    view_count = VALUES(view_count)
+                                    """, (
+                                        content_id,
+                                        datetime.now(timezone.utc),
+                                        sv.get("view_count"),
+                                    ))
+                    print(f"        + shorts {len(shorts)}개")
                 activity = classify_activity(videos, now)
                 cur.execute("UPDATE channels SET channel_activity_status=%s WHERE channel_id=%s",
                             (activity, channel_id))
