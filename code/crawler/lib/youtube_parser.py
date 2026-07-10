@@ -397,6 +397,60 @@ def parse_l2_videos(data):
         })
     return videos
 
+
+def parse_l2_shorts(data):
+    """richGridRenderer에서 shorts 목록 파싱 (shortsLockupViewModel 구조).
+    롱폼 parse_l2_videos와 달리 목록에 날짜 없음 → published_at은 L2b 상세에서 채움.
+    """
+    grid = find_first(data, "richGridRenderer")
+    if not grid:
+        return []
+    items = grid.get("contents", [])
+    videos = []
+
+    for item in items:
+        slvm = find_first(item, "shortsLockupViewModel")
+        if not slvm:
+            continue
+
+        # videoId: onTap.innertubeCommand.reelWatchEndpoint.videoId
+        video_id = None
+        on_tap = slvm.get("onTap", {})
+        rwe = find_first(on_tap, "reelWatchEndpoint")
+        if isinstance(rwe, dict):
+            video_id = rwe.get("videoId")
+        if not video_id:
+            # fallback: entityId "shorts-shelf-item-XXXX"
+            eid = slvm.get("entityId", "")
+            if eid.startswith("shorts-shelf-item-"):
+                video_id = eid.replace("shorts-shelf-item-", "", 1)
+        if not video_id:
+            continue
+
+        # title / view_count: overlayMetadata
+        title = None
+        view_text = None
+        om = slvm.get("overlayMetadata", {})
+        if isinstance(om, dict):
+            pt = om.get("primaryText")
+            if isinstance(pt, dict):
+                title = pt.get("content")
+            st = om.get("secondaryText")
+            if isinstance(st, dict):
+                view_text = st.get("content")
+
+        videos.append({
+            "video_id": video_id,
+            "title": title,
+            "view_count": parse_count(view_text),
+            "published_relative": None,        # shorts 목록엔 날짜 없음
+            "published_at_approx": None,       # L2b 상세에서 채움
+            "duration": None,                  # shorts 목록엔 길이 없음
+            "duration_sec": None,
+        })
+    return videos
+
+
 def parse_watch_page(video_id):
     """영상 개별 페이지 → 정확한 게시일·조회수·좋아요·댓글수·카테고리·영상길이."""
     url = f"https://www.youtube.com/watch?v={video_id}&hl=ko&gl=KR"
