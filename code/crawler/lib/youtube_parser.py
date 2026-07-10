@@ -412,7 +412,8 @@ def parse_watch_page(video_id):
         "video_id": video_id,
         "published_at": None, "view_count": None,
         "like_count": None, "comment_count": None, "category": None,
-        "duration_sec": None, # [추가]
+        "duration_sec": None, 
+        "is_paid_promotion": False,
     }
 
     # 카테고리 파싱
@@ -457,6 +458,10 @@ def parse_watch_page(video_id):
         if vtext:
             result["view_count"] = parse_count(vtext)
 
+    # [추가] 유료광고 판정 (숏폼·롱폼 공통: ytInitialPlayerResponse.paidContentOverlay)
+    # preload 이름(paidContentOverlayRenderer) 오탐 방지 위해 실데이터 패턴으로 매칭
+    if re.search(r'"paidContentOverlayRenderer"\s*:\s*\{\s*"text"', body):
+        result["is_paid_promotion"] = True
     return result, 200
 
 
@@ -464,13 +469,44 @@ def parse_watch_page(video_id):
 # ─────────────────────────────────────────────────────────
 # 단독 실행 테스트
 # ─────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    import sys
-    urls = sys.argv[1:] or ["https://www.youtube.com/@mkbhd"]
-    for u in urls:
-        r = fetch_channel_l1(u)
-        if r.ok:
-            print(f"OK  {r.channel_name} | 구독 {r.subscriber_count} "
-                  f"| 조회 {r.total_view_count} | 영상 {r.total_video_count} | UC {r.external_channel_id}")
-        else:
-            print(f"FAIL [{r.error_type}] code={r.http_status} signal={r.page_signal} | {r.error}")
+    import json
+    from pathlib import Path
+
+    BASE_DIR = Path(__file__).parent
+
+    with open(BASE_DIR / "short_detail.html", encoding="utf-8") as f:
+        html = f.read()
+
+    keywords = [
+        "paid",
+        "promotion",
+        "sponsor",
+        "metadataBadgeRenderer",
+        "badgeRenderer",
+        "factoidRenderer",
+        "paidContent",
+        "containsPaid",
+        "adBadge",
+        "metadataBadge",
+        "badge"
+    ]
+
+    for kw in keywords:
+        print("=" * 80)
+        print(kw)
+
+        pos = html.find(kw)
+
+        if pos == -1:
+            print("NOT FOUND")
+            continue
+
+        print("FOUND")
+
+        start = max(0, pos - 1000)
+        end = min(len(html), pos + 3000)
+
+        print(html[start:end])
