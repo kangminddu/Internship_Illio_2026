@@ -98,6 +98,12 @@ AND cs1.captured_at=t.latest
 
 ON ct.content_id=cs.content_id
 
+WHERE ch.platform = 'youtube'
+  AND ch.channel_id IN (
+      SELECT channel_id FROM crawl_logs
+      WHERE layer='L1' AND status='success'
+  )
+
 ORDER BY
 cr.nickname,
 ct.published_at DESC;
@@ -138,7 +144,7 @@ idx = cols.index("길이(초)") + 1
 cols.insert(idx, "영상길이")
 df = df[cols]
 
-filename = os.path.join(EXPORT_DIR, "L2_영상정보_포카챠.xlsx")
+filename = os.path.join(EXPORT_DIR, "L2_영상정보_이메일.xlsx")
 df.to_excel(filename, index=False, sheet_name="L2")
 
 # =====================================================

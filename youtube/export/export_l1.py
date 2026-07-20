@@ -34,6 +34,12 @@ SELECT
     END AS '수집결과',
     COALESCE(log.error_type,'-')  AS '실패사유',
     COALESCE(log.http_status,'-') AS 'HTTP코드',
+    COALESCE(em.emails, '') AS '이메일',
+    COALESCE(em.sources, '') AS '이메일출처',
+    CASE
+        WHEN em.emails IS NOT NULL AND em.emails <> '' THEN '확보'
+        ELSE '직접 유튜브 확인 필요'
+    END AS '이메일상태',
     COALESCE(ch.channel_url_normalized, ch.channel_url_raw) AS 'URL'
 FROM creators cr
 JOIN channels ch
@@ -60,6 +66,19 @@ LEFT JOIN (
     ) m ON c.log_id = m.mx
 ) log
     ON log.channel_id = ch.channel_id
+LEFT JOIN (
+    SELECT creator_id,
+           GROUP_CONCAT(DISTINCT email ORDER BY email SEPARATOR ', ')            AS emails,
+           GROUP_CONCAT(DISTINCT source_platform ORDER BY source_platform SEPARATOR ', ') AS sources
+    FROM creator_emails
+    GROUP BY creator_id
+) em
+    ON em.creator_id = cr.creator_id
+WHERE ch.platform = 'youtube'
+  AND ch.channel_id IN (
+      SELECT channel_id FROM crawl_logs
+      WHERE layer='L1' AND status='success'
+  )
 ORDER BY cs.follower_count DESC;
 """
 
@@ -79,10 +98,10 @@ df = pd.read_sql(sql, conn)
 conn.close()
 
 # 텍스트 컬럼 수식 오인 방지 (df 생성 후 적용)
-for col in ["크리에이터", "소속", "URL"]:
+for col in ["크리에이터", "소속", "URL", "이메일", "이메일출처"]:
     df[col] = df[col].apply(sanitize_formula)
 
-filename = os.path.join(EXPORT_DIR, "L1_채널정보_포카챠.xlsx")
+filename = os.path.join(EXPORT_DIR, "L1_채널정보_이메일.xlsx")
 df.to_excel(filename, index=False, sheet_name="L1")
 
 # ----------------------------------------
@@ -106,9 +125,11 @@ for cell in ws[1]:
 for row in ws.iter_rows(min_row=2):
     for cell in row:
         cell.border = border
+        # 번호(1)·구독자수(5)·누적조회수(6)·총영상수(7) 가운데 정렬
         if cell.column in [1, 5, 6, 7]:
             cell.alignment = center
 
+# 숫자 포맷: 구독자수(E)·누적조회수(F)·총영상수(G)
 for col in ["E", "F", "G"]:
     for cell in ws[col][1:]:
         cell.number_format = '#,##0'
@@ -132,3 +153,7 @@ print(f"총 {len(df)}개 채널")
 # 검증 — 활동상태 분포 (DB 최신값 반영됐는지)
 print("활동상태 분포:")
 print(df['활동상태'].value_counts().to_string())
+
+# 검증 — 이메일 확보 현황
+print("\n이메일상태 분포:")
+print(df['이메일상태'].value_counts().to_string())

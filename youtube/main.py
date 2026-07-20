@@ -5,11 +5,12 @@ import argparse
 
 # 파이프라인 단계 순서 정의 (한 곳에서 관리)
 # backfill은 반드시 metric 앞 — activity 재판정 후에 metric이 대상을 고르므로.
-PIPELINE = ["l1", "l2a", "l2b", "l3", "backfill", "metric", "export"]
+PIPELINE = ["l1", "email", "l2a", "l2b", "l3", "backfill", "metric", "export"]
 
 # 각 단계가 실제로 실행하는 모듈 매핑
 STAGE_MODULES = {
     "l1":       [("crawler.crawler_l1_parallel", True)],
+    "email":    [("crawler.chzzk_email", False)], 
     "l2a":      [("crawler.crawler_l2a", True)],
     "l2b":      [("crawler.crawler_l2", True)],
     "l3":       [("crawler.crawler_l3", True)],
@@ -58,6 +59,7 @@ def main(
     seed_file=None,
     channel=None,
     l1=False,
+    email = False,
     l2a=False,
     l2b=False,
     l3=False,
@@ -94,7 +96,7 @@ def main(
         start = PIPELINE.index(from_stage)
         stages = PIPELINE[start:]
     else:
-        flags = {"l1": l1, "l2a": l2a, "l2b": l2b, "l3": l3,
+        flags = {"l1": l1, "email": email,"l2a": l2a, "l2b": l2b, "l3": l3,
                  "backfill": backfill, "metric": metric, "export": export}
         selected = [s for s in PIPELINE if flags[s]]
         stages = selected if selected else PIPELINE
@@ -118,9 +120,10 @@ if __name__ == "__main__":
     parser.add_argument("--channel", type=int,
                         help="Run L3 for one channel only")
     parser.add_argument("--from", dest="from_stage",
-                        help="이 단계부터 끝까지 실행 (l1/l2a/l2b/l3/backfill/metric/export)")
+                        help="이 단계부터 끝까지 실행 (l1/email/l2a/l2b/l3/backfill/metric/export)")
 
     parser.add_argument("--l1", action="store_true")
+    parser.add_argument("--email", action="store_true")
     parser.add_argument("--l2a", action="store_true")
     parser.add_argument("--l2b", action="store_true")
     parser.add_argument("--l3", action="store_true")
@@ -135,6 +138,7 @@ if __name__ == "__main__":
         seed_file=args.file,
         channel=args.channel,
         l1=args.l1,
+        email=args.email,
         l2a=args.l2a,
         l2b=args.l2b,
         l3=args.l3,

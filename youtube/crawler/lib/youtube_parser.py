@@ -2,7 +2,7 @@
 YouTube 공통 파싱 라이브러리
 
 포함 기능
-- Channel(L1) 수집
+- Channel(L1) 수집  (+ 공개 설명란 이메일 추출)
 - Video(L2) 파싱
 - Watch Page 파싱
 - ytInitialData 추출
@@ -48,6 +48,19 @@ def get_session():
 
 
 # ─────────────────────────────────────────────────────────
+# 이메일 추출 (공개 설명란에 크리에이터가 직접 적어둔 것만)
+# reCAPTCHA 뒤의 "이메일 주소 보기"는 HTML에 없으므로 자동으로 대상에서 빠짐
+# ─────────────────────────────────────────────────────────
+EMAIL_RE = re.compile(r'[\w.+-]+@[\w-]+\.[\w.-]+')
+
+def extract_emails(text):
+    if not text:
+        return []
+    # 중복 제거 + 소문자 정규화
+    return list({e.lower() for e in EMAIL_RE.findall(text)})
+
+
+# ─────────────────────────────────────────────────────────
 # 결과 구조
 # ─────────────────────────────────────────────────────────
 @dataclass
@@ -66,6 +79,8 @@ class ChannelL1:
     had_yt_data: bool = False
     page_signal: Optional[str] = None
     error_type: Optional[str] = None
+    description: Optional[str] = None       # 추가: 채널 설명 원문
+    emails: Optional[list] = None           # 추가: 설명에서 추출한 이메일 리스트
 
 
 # ─────────────────────────────────────────────────────────
@@ -188,7 +203,6 @@ def parse_joined_date(text):
     return None
 
 def parse_l1(data: dict) -> dict:
-    """aboutChannelViewModel + channelMetadataRenderer 에서 L1 필드 추출."""
     result = {
         "external_channel_id": None,
         "channel_name": None,
@@ -196,6 +210,8 @@ def parse_l1(data: dict) -> dict:
         "subscriber_count": None,
         "total_view_count": None,
         "total_video_count": None,
+        "description": None,
+        "emails": [],
     }
 
     meta = find_first(data, "channelMetadataRenderer") or {}
@@ -203,13 +219,46 @@ def parse_l1(data: dict) -> dict:
 
     result["channel_name"] = meta.get("title")
 
+    # ── description 본문 ──
+    desc = None
+    if about:
+        d = about.get("description")
+        if isinstance(d, dict):
+            desc = d.get("content")
+        elif isinstance(d, str):
+            desc = d
+    if not desc:
+        desc = meta.get("description")
+
+    # ── links 섹션 추출 (치지직 등 외부 링크가 여기 있음) ──
+    link_texts = []
+    if about:
+        for link in about.get("links", []) or []:
+            lvm = link.get("channelExternalLinkViewModel") or {}
+            # 링크 URL
+            l = lvm.get("link")
+            if isinstance(l, dict):
+                url = l.get("content")
+                if url:
+                    link_texts.append(url)
+            # 링크 제목 (혹시 제목에 이메일 적는 경우 대비)
+            t = lvm.get("title")
+            if isinstance(t, dict):
+                tt = t.get("content")
+                if tt:
+                    link_texts.append(tt)
+
+    # ── description + links 를 합쳐서 저장 ──
+    # 이메일/치지직 링크 추출이 둘 다에서 되도록
+    combined = "\n".join(filter(None, [desc] + link_texts))
+    result["description"] = combined or None
+    result["emails"] = extract_emails(combined)
+
     if about:
         result["subscriber_count"] = parse_count(about.get("subscriberCountText"))
         result["total_view_count"] = parse_count(about.get("viewCountText"))
         result["total_video_count"] = parse_count(about.get("videoCountText"))
         result["external_channel_id"] = about.get("channelId") or meta.get("externalId")
-
-        # 개설일: "가입일: 2008. 3. 21." → "2008-03-21" 로 변환
         result["channel_opened_at"] = parse_joined_date(about.get("joinedDateText"))
     else:
         result["external_channel_id"] = meta.get("externalId")
@@ -523,44 +572,16 @@ def parse_watch_page(video_id):
 # ─────────────────────────────────────────────────────────
 # 단독 실행 테스트
 # ─────────────────────────────────────────────────────────
-# ─────────────────────────────────────────────────────────
-# ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    import json
-    from pathlib import Path
+    import sys
 
-    BASE_DIR = Path(__file__).parent
-
-    with open(BASE_DIR / "short_detail.html", encoding="utf-8") as f:
-        html = f.read()
-
-    keywords = [
-        "paid",
-        "promotion",
-        "sponsor",
-        "metadataBadgeRenderer",
-        "badgeRenderer",
-        "factoidRenderer",
-        "paidContent",
-        "containsPaid",
-        "adBadge",
-        "metadataBadge",
-        "badge"
-    ]
-
-    for kw in keywords:
-        print("=" * 80)
-        print(kw)
-
-        pos = html.find(kw)
-
-        if pos == -1:
-            print("NOT FOUND")
-            continue
-
-        print("FOUND")
-
-        start = max(0, pos - 1000)
-        end = min(len(html), pos + 3000)
-
-        print(html[start:end])
+    # 사용법: python youtube_parser.py <채널URL>
+    # → 이메일 추출 + description 키 확인용 덤프 생성
+    if len(sys.argv) > 1:
+        test_url = sys.argv[1]
+        r = fetch_channel_l1(test_url, debug_dump=True)
+        print("ok:", r.ok)
+        print("channel_name:", r.channel_name)
+        print("description:", (r.description or "")[:300])
+        print("emails:", r.emails)
+        print("→ ytinitialdata_dump.json 에서 aboutChannelViewModel 확인 가능")

@@ -14,7 +14,7 @@ except ImportError:
 
 from tiktok import config
 
-DEFAULT_EXCEL = "code/SNS_정보.xlsx"
+DEFAULT_EXCEL = "youtube/SNS_정보.xlsx"
 SHEET = "Sheet1"
 HANDLE_RE = re.compile(r"^[A-Za-z0-9._]{2,24}$")
 SHORTLINK_HOSTS = ("vt.tiktok.com", "vm.tiktok.com", "lite.tiktok.com")
@@ -90,8 +90,7 @@ CHANNEL_UPSERT = (
     "(creator_id, platform, channel_url_raw, channel_url_normalized, channel_id_status) "
     "VALUES (%s,'tiktok',%s,%s,%s) "
     "ON DUPLICATE KEY UPDATE "
-    "channel_url_normalized=VALUES(channel_url_normalized), "
-    "channel_id_status=VALUES(channel_id_status)"
+    "channel_id = channel_id"
 )
 
 

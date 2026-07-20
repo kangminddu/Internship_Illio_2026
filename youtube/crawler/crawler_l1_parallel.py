@@ -98,7 +98,14 @@ def process_one(channel):
                     cur.execute(
                         "UPDATE channels SET channel_opened_at=%s, channel_existence_status='normal' WHERE channel_id=%s",
                         (r.channel_opened_at, channel_id))
-
+                    
+                    
+                # description 저장 (치지직 등 폴백에서 재요청 없이 재사용)
+                if r.description:
+                    cur.execute(
+                        "UPDATE channels SET description=%s WHERE channel_id=%s",
+                        (r.description, channel_id)
+                    )
                 # 4) 성공 로그
                 cur.execute("""
                     INSERT INTO crawl_logs

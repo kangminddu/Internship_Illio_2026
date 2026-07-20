@@ -27,3 +27,8 @@ L3_WORKERS = 3
 # ── 공통 ──
 BATCH_LIMIT = None
 STOP_ON_429 = 5
+
+# -- EMAIL (치지직 보강 수집) --
+CHZZK_USER_AGENT = "Mozilla/5.0"
+CHZZK_TIMEOUT = 15
+CHZZK_DELAY = 1.0

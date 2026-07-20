@@ -87,6 +87,11 @@ LEFT JOIN channel_snapshots chs
    )
 LEFT JOIN channel_metrics m
     ON ch.channel_id = m.channel_id
+WHERE ch.platform = 'youtube'
+  AND ch.channel_id IN (
+      SELECT channel_id FROM crawl_logs
+      WHERE layer='L1' AND status='success'
+  )
 GROUP BY ch.channel_id
 ORDER BY cr.nickname;
 """
@@ -271,7 +276,7 @@ df = df[[
 # =====================================
 # Excel 저장
 # =====================================
-filename = os.path.join(EXPORT_DIR, "파생지표_포카챠.xlsx")
+filename = os.path.join(EXPORT_DIR, "파생지표_이메일.xlsx")
 df.to_excel(filename, index=False, sheet_name="Metrics")
 
 wb = load_workbook(filename)

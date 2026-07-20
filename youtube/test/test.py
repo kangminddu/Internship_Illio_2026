@@ -1,75 +1,72 @@
 import asyncio
+import json
+
 from playwright.async_api import async_playwright
 
-VIDEO_ID = "hLJ9SAo90cQ"
+CHANNEL = "https://www.youtube.com/channel/UCr48whguz2qOwQOq99BejnA/about?hl=en&gl=US"
 
-seen = []
 
 async def main():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
-        page = await browser.new_page()
 
-        async def on_response(response):
-            if "youtubei/v1/next" in response.url:
-                print("\n=== youtubei/v1/next ===")
-                print(response.url)
+    async with async_playwright() as p:
+
+        browser = await p.chromium.connect_over_cdp(
+            "http://127.0.0.1:9222"
+        )
+
+        context = browser.contexts[0]
+        page = await context.new_page()
+
+        async def on_response(resp):
+            if "reveal_business_email" in resp.url:
+                print("\n========== API ==========")
+                print(resp.url)
 
                 try:
-                    data = await response.json()
-                    seen.append(data)
-                    print("response 저장 완료")
+                    body = await resp.json()
+                    print(json.dumps(body, indent=2, ensure_ascii=False))
                 except Exception as e:
-                    print("json 실패:", e)
+                    print("json parse 실패:", e)
 
         page.on("response", on_response)
 
-        url = f"https://www.youtube.com/watch?v={VIDEO_ID}&hl=ko&gl=KR"
+        print("접속:", CHANNEL)
+        await page.goto(CHANNEL)
 
-        print("접속:", url)
-        await page.goto(url)
+        await page.wait_for_timeout(3000)
 
-        print("현재 URL:", page.url)
+        # 이메일 주소 보기 버튼 찾기
+        texts = [
+            "이메일 주소 보기",
+            "이메일 보기",
+            "View email address",
+            "View email",
+        ]
 
-        await page.wait_for_timeout(1000)
+        clicked = False
 
-        try:
-            await page.click("button[aria-label*='모두 수락']", timeout=3000)
-        except:
-            pass
+        for text in texts:
 
-        await page.evaluate("window.scrollTo(0, 800)")
+            try:
+                btn = page.get_by_text(text, exact=False)
 
-        for i in range(10):
-            await page.evaluate("window.scrollBy(0, 1000)")
-            await page.wait_for_timeout(1000)
-            print(f"scroll {i+1}")
+                if await btn.count():
 
-        print("\n==============================")
-        print("youtubei/v1/next 응답 수:", len(seen))
+                    print("버튼 발견 :", text)
 
-        payloads = 0
+                    await btn.first.click()
 
-        def walk(obj):
-            nonlocal payloads
+                    clicked = True
+                    break
 
-            if isinstance(obj, dict):
-                if "commentEntityPayload" in obj:
-                    payloads += 1
-                for v in obj.values():
-                    walk(v)
+            except Exception:
+                pass
 
-            elif isinstance(obj, list):
-                for v in obj:
-                    walk(v)
+        if not clicked:
+            print("버튼을 못 찾음")
 
-        for d in seen:
-            walk(d)
+        print("\n120초 대기 (CAPTCHA 풀거나 응답 확인)")
+        await page.wait_for_timeout(120000)
 
-        print("commentEntityPayload 수:", payloads)
-
-        input("\n엔터 누르면 종료")
-
-        await browser.close()
 
 asyncio.run(main())

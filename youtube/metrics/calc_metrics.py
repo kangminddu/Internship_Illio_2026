@@ -191,7 +191,7 @@ with conn.cursor() as cur:
         ad_shorts_er = er_of(ad_shorts)
         normal_shorts_avg_view,   normal_shorts_sample   = avg_view_of(normal_shorts)
         normal_shorts_avg_like = avg_like_of(normal_shorts)
-        normal_shorts_avg_comment = avg_like_of(normal_shorts)
+        normal_shorts_avg_comment = avg_comment_of(normal_shorts)
         normal_shorts_er = er_of(normal_shorts)
 
         # ── INSERT ──
