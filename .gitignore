@@ -15,3 +15,17 @@ tiktok_profile/
 tiktok/output/
 tiktok/session/
 tiktok/**/*.html
+
+# Config
+youtube/config.py
+tiktok/config.py
+instagram/config.py
+
+# Local login/session
+**/cookies.json
+**/session.json
+**/storage_state.json
+
+# Test dumps
+*.html
+*.json
