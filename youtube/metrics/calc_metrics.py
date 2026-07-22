@@ -60,16 +60,22 @@ cutoff_6m = today_midnight - relativedelta(months=6)
 cutoff_12m = today_midnight - relativedelta(months=12)
 
 with conn.cursor() as cur:
-    print("기존 channel_metrics 삭제")
-    cur.execute("DELETE FROM channel_metrics")
-
+    print("기존 Youtube channel_metrics 삭제")
+    cur.execute("""
+        DELETE cm
+        FROM channel_metrics cm
+        JOIN channels ch
+            ON cm.channel_id = ch.channel_id
+        WHERE ch.platform = 'youtube'
+    """)
     cur.execute("""
         SELECT DISTINCT ch.channel_id
         FROM channels ch
         JOIN crawl_logs cl
             ON ch.channel_id = cl.channel_id
            AND cl.layer = 'L2b'
-        WHERE ch.channel_activity_status IN ('active','low_active')
+        WHERE ch.platform = 'youtube' 
+        AND ch.channel_activity_status IN ('active','low_active')
     """)
     channel_ids = [r[0] for r in cur.fetchall()]
     print(f"대상 채널 : {len(channel_ids)}개")
