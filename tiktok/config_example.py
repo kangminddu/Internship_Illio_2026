@@ -10,12 +10,19 @@ SESSION_DIR = os.path.join(BASE_DIR, "session")
 os.makedirs(EXPORT_DIR, exist_ok=True)
 os.makedirs(SESSION_DIR, exist_ok=True)
 
-# Playwright 로그인 세션 저장 파일 (L3에서 로그인 필요할 경우 대비)
-# 틱톡 로그인 세션 받아서 session/tiktok_state.json 사용(자신것)
+# Playwright persistent profile
+#   - login.py 가 최초 1회 생성하고, L1/L2/L3 가 공유한다.
+#   - ⚠️ storage_state(json) 방식이 아님. 프로필 디렉터리 자체를 재사용한다.
+#   - 프로필은 프로세스당 1개만 열 수 있음 (Chromium SingletonLock).
+PROFILE_DIR = os.environ.get(
+    "TIKTOK_PROFILE_DIR",
+    os.path.join(SESSION_DIR, "profile"),
+)
+
+# [deprecated] storage_state 방식 잔재. 현재 미사용 — persistent profile로 대체됨.
 SESSION_PATH = os.path.join(SESSION_DIR, "tiktok_state.json")
 
 # ── DB (YouTube와 같은 fandom_crm 공유, platform 컬럼으로 구분) ──
-# 데이터베이스 내용 넣기
 DB = dict(host="", port="", user="", password="",
           database="fandom_crm", charset="utf8mb4")
 
@@ -36,8 +43,8 @@ L1_DELAY   = 2.0         # 요청 간 최소 대기(초)
 
 L2_WORKERS = 1
 L2_DELAY   = 2.0
-L2_GOTO_DELAY = (1200,2200)
-L2_SCROLL_DELAY = (1000,2200)
+L2_GOTO_DELAY = (1200, 2200)
+L2_SCROLL_DELAY = (1000, 2200)
 L2_CHANNEL_GAP = (1.5, 3.5)
 L2_SCROLL_STALL = 2
 
@@ -48,5 +55,6 @@ L3_DELAY   = 3.0
 STOP_ON_BLOCK = 3        # 연속 차단 N회면 해당 단계 중단
 
 # ── 실행 제어 ──
-BATCH_LIMIT = None   # None이면 전체, 숫자면 그만큼만 (테스트용)
-HEADLESS    = False      # 초기 개발/디버깅엔 브라우저 보이게. 안정화 후 True
+BATCH_LIMIT = None       # None이면 전체, 숫자면 그만큼만 (테스트용)
+HEADLESS    = False      # persistent profile 사용 시 False 유지 권장.
+                         # login.py(False)와 값이 다르면 재인증을 요구할 수 있음.

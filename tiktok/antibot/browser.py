@@ -23,10 +23,7 @@ CHANNEL = getattr(config, "BROWSER_CHANNEL", None)   # "chrome" 또는 None
 
 # ── 프로필 유틸 ────────────────────────────────────────────
 def profile_ready() -> bool:
-    """login.py가 한 번이라도 정상 실행됐는지 확인."""
-    return os.path.isfile(
-        os.path.join(config.PROFILE_DIR, "Default", "Cookies")
-    )
+    return os.path.isdir(config.PROFILE_DIR) and bool(os.listdir(config.PROFILE_DIR))
 
 
 def clear_profile_locks():
