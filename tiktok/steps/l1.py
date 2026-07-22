@@ -18,9 +18,7 @@ except ImportError:
 
 # 프록시 없이 L1 전용으로 띄우는 브라우저 설정.
 # (프록시/rotate/session이 필요 없어 browser.py 대신 여기서 직접 관리)
-from pathlib import Path
 
-PROFILE_DIR = str(Path.home() / "tiktok-playwright-profile")
 
 LAUNCH_ARGS = [
     "--disable-blink-features=AutomationControlled",
@@ -152,7 +150,7 @@ def fetch_targets(worker_conn, limit):
 async def _new_context(playwright):
     """프록시 없이 persistent context 생성 + 리소스 차단 + stealth."""
     context = await playwright.chromium.launch_persistent_context(
-        user_data_dir=PROFILE_DIR,
+        user_data_dir=config.PROFILE_DIR,   # ← 변경된 부분
         headless=False,
         args=LAUNCH_ARGS,
     )
@@ -170,6 +168,11 @@ async def _new_page(context):
 async def run(channel=None, limit=None, **_):
     if pymysql is None:
         raise SystemExit("pymysql 필요: pip install pymysql")
+    
+    from tiktok.antibot.browser import profile_ready, clear_profile_locks
+    if not profile_ready():
+        raise SystemExit(f"프로필 없음: {config.PROFILE_DIR}\n먼저 `python login.py` 실행")
+    clear_profile_locks()
 
     # -----------------------------
     # 단일 채널 테스트

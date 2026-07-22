@@ -20,7 +20,7 @@ tiktok/**/*.html
 youtube/config.py
 tiktok/config.py
 instagram/config.py
-
+instagram/session/
 # Local login/session
 **/cookies.json
 **/session.json
