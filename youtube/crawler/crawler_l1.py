@@ -4,9 +4,9 @@ import pymysql
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
-from crawler.lib.youtube_parser import fetch_channel_l1
+from youtube.crawler.lib.youtube_parser import fetch_channel_l1
 
-from config import DB, L1_WORKERS, L1_DELAY, BATCH_LIMIT, STOP_ON_429
+from youtube.config import DB, L1_WORKERS, L1_DELAY, BATCH_LIMIT, STOP_ON_429
 
 lock = threading.Lock()
 counter = {"done": 0, "ok": 0, "fail": 0, "rate_limited": 0, "emails": 0}

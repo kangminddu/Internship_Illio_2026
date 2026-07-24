@@ -1,6 +1,7 @@
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-
+from instagram.config import context_kwargs
+from playwright_stealth import Stealth
 SESSION_DIR = Path("instagram/session")
 SESSION_FILE = SESSION_DIR / "instagram.json"
 
@@ -10,18 +11,16 @@ def main():
     SESSION_DIR.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as p:
-
+        
         browser = p.chromium.launch(
             headless=False,
             slow_mo=100,
         )
 
-        context = browser.new_context(
-            viewport={"width": 1400, "height": 900}
-        )
+        context = browser.new_context(**context_kwargs())
 
         page = context.new_page()
-
+        Stealth().apply_stealth_sync(page)
         print("=" * 60)
         print("Instagram Login")
         print("=" * 60)

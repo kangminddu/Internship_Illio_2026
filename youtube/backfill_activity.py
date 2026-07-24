@@ -1,7 +1,7 @@
 # backfill_activity.py
 import pymysql
-from config import DB
-from crawler.crawler_l2a import classify_activity  # 경로는 네 구조에 맞게
+from youtube.config import DB
+from youtube.crawler.crawler_l2a import classify_activity  # 경로는 네 구조에 맞게
 
 def main():
     conn = pymysql.connect(**DB, autocommit=True)

@@ -4,7 +4,7 @@ import pymysql
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-from config import DB
+from youtube.config import DB
 
 def avg_like_of(rows):
     likes = [r[4] for r in rows if r[4] is not None]

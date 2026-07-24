@@ -4,7 +4,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 import pymysql
 from datetime import datetime
 
-from config import DB
+from youtube.config import DB
 
 conn = pymysql.connect(**DB, autocommit=True)
 

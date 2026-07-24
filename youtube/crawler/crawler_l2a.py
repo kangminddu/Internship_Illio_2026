@@ -4,9 +4,9 @@ import pymysql
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta
 
-from crawler.lib.youtube_parser import get_session, extract_yt_initial_data, parse_l2_videos, parse_l2_shorts
+from youtube.crawler.lib.youtube_parser import get_session, extract_yt_initial_data, parse_l2_videos, parse_l2_shorts
 
-from config import DB, L2A_WORKERS, L2A_DELAY
+from youtube.config import DB, L2A_WORKERS, L2A_DELAY
 BATCH_LIMIT = None
 STOP_ON_429 = 5
 

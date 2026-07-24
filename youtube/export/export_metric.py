@@ -8,7 +8,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-from config import DB, EXPORT_DIR
+from youtube.config import DB, EXPORT_DIR
 
 # =====================================
 # SQL — 모든 파생지표를 channel_metrics(m)에서 직접 (export 재계산 없음)
@@ -276,7 +276,7 @@ df = df[[
 # =====================================
 # Excel 저장
 # =====================================
-filename = os.path.join(EXPORT_DIR, "파생지표_이메일.xlsx")
+filename = os.path.join(EXPORT_DIR, "파생지표_최종.xlsx")
 df.to_excel(filename, index=False, sheet_name="Metrics")
 
 wb = load_workbook(filename)

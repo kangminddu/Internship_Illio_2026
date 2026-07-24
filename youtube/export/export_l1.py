@@ -8,7 +8,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-from config import DB, EXPORT_DIR
+from youtube.config import DB, EXPORT_DIR
 
 sql = """
 SELECT
@@ -101,7 +101,7 @@ conn.close()
 for col in ["크리에이터", "소속", "URL", "이메일", "이메일출처"]:
     df[col] = df[col].apply(sanitize_formula)
 
-filename = os.path.join(EXPORT_DIR, "L1_채널정보_이메일.xlsx")
+filename = os.path.join(EXPORT_DIR, "L1_채널정보_최종.xlsx")
 df.to_excel(filename, index=False, sheet_name="L1")
 
 # ----------------------------------------

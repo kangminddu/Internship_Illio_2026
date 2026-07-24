@@ -5,12 +5,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 # 모듈 import 확인 필요
-from crawler.lib.youtube_parser import parse_watch_page
+from youtube.crawler.lib.youtube_parser import parse_watch_page
 
 # ==========================================
 # 환경 설정
 # ==========================================
-from config import DB, L2B_WORKERS, L2B_DELAY, L2_RECENT_MONTHS
+from youtube.config import DB, L2B_WORKERS, L2B_DELAY, L2_RECENT_MONTHS
 
 RECENT_N = 15            # 채널당 최근 영상 15개
 BATCH_LIMIT = None       # 테스트 필요시 숫자 입력

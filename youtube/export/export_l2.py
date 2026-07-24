@@ -7,7 +7,7 @@ import pymysql
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
-from config import DB, EXPORT_DIR
+from youtube.config import DB, EXPORT_DIR
 
 sql = """
 SELECT
@@ -144,7 +144,7 @@ idx = cols.index("길이(초)") + 1
 cols.insert(idx, "영상길이")
 df = df[cols]
 
-filename = os.path.join(EXPORT_DIR, "L2_영상정보_이메일.xlsx")
+filename = os.path.join(EXPORT_DIR, "L2_영상정보_최종.xlsx")
 df.to_excel(filename, index=False, sheet_name="L2")
 
 # =====================================================

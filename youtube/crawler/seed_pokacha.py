@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 from openpyxl import load_workbook
 import pymysql
-from config import DB
+from youtube.config import DB
 
 XLSX = "/Users/kangminsoo/Desktop/Internship_Illio_2026/포카챠_섭외_DB_필터_20260708.xlsx"
 SHEET = "섭외 통합 DB"

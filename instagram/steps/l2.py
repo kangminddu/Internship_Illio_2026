@@ -33,29 +33,30 @@ import re
 import time
 import random
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import TimeoutError as PWTimeout
-
+from playwright_stealth import Stealth
+_stealth = Stealth()
 # ── config 연동 (실행 방식에 따라 import 경로 대응) ──
 try:
     from instagram.config import (
         SESSION_FILE, OUTPUT_DIR, L2_HTML_DIR, L2_GRAPHQL_DIR,
-        LOG_DIR, L2_LOG_FILE, LOCALE, USER_AGENT, HEADLESS, DB, PLATFORM,
+        LOG_DIR, L2_LOG_FILE,  HEADLESS, DB, PLATFORM,
         L2_GRAPHQL_URL_PART, L2_POSTS_QUERY_NAMES, L2_POST_LIMIT,
         L2_MAX_SCROLLS, L2_SCROLL_STALL, L2_GOTO_TIMEOUT_MS,
         L2_GRAPHQL_GRACE_MS, L2_RENDER_WAIT_MS, L2_SCROLL_DELAY, L2_CHANNEL_GAP,
-        BATCH_LIMIT, STOP_ON_BLOCK, L2_REELS_QUERY_NAMES, L2_COLLECT_REELS, L2_REELS_LIMIT,
+        BATCH_LIMIT, STOP_ON_BLOCK, L2_REELS_QUERY_NAMES, L2_COLLECT_REELS, L2_REELS_LIMIT, context_kwargs
     )
 except Exception:
     from config import (
         SESSION_FILE, OUTPUT_DIR, L2_HTML_DIR, L2_GRAPHQL_DIR,
-        LOG_DIR, L2_LOG_FILE, LOCALE, USER_AGENT, HEADLESS, DB, PLATFORM,
+        LOG_DIR, L2_LOG_FILE,  HEADLESS, DB, PLATFORM,
         L2_GRAPHQL_URL_PART, L2_POSTS_QUERY_NAMES, L2_POST_LIMIT,
         L2_MAX_SCROLLS, L2_SCROLL_STALL, L2_GOTO_TIMEOUT_MS,
         L2_GRAPHQL_GRACE_MS, L2_RENDER_WAIT_MS, L2_SCROLL_DELAY, L2_CHANNEL_GAP,
-        BATCH_LIMIT, STOP_ON_BLOCK,L2_REELS_QUERY_NAMES, L2_COLLECT_REELS,L2_REELS_LIMIT,
+        BATCH_LIMIT, STOP_ON_BLOCK,L2_REELS_QUERY_NAMES, L2_COLLECT_REELS,L2_REELS_LIMIT,context_kwargs
     )
 
 try:
@@ -230,7 +231,7 @@ def _dt(unix_sec):
     if not unix_sec:
         return None
     try:
-        return datetime.utcfromtimestamp(int(unix_sec))
+        return datetime.fromtimestamp(int(unix_sec), timezone.utc).replace(tzinfo=None)
     except Exception:
         return None
 
@@ -313,7 +314,7 @@ def collect_posts(page, username):
     }
 
     # 탭별 버킷. seen 은 공유 → 그리드에 이미 잡힌 릴스는 중복 저장 안 됨.
-    captured = {"pages": [], "posts": [], "reels": [], "seen": set()}
+    captured = {"pages": [], "posts": [], "reels": [], "seen": set(), "by_id": {}}
 
     def _on_response(response):
         name = _friendly_name(response)
@@ -351,11 +352,27 @@ def collect_posts(page, username):
 
         for p in posts or []:
             eid = p.get("external_id")
-            if eid and eid not in captured["seen"]:
-                captured["seen"].add(eid)
-                bucket.append(p)
-                if len(bucket) >= limit:
-                    return
+            if not eid:
+                continue
+
+            if eid in captured["seen"]:
+                # ⚠️ 중복이라고 버리면 안 된다.
+                #    그리드(timeline) 응답에는 조회수 필드가 아예 없고,
+                #    릴스(clips) 응답에는 caption/taken_at 이 없다.
+                #    같은 게시물이 양쪽에서 오면 서로의 빈 칸을 채워준다.
+                #    (버리면 먼저 잡힌 그리드 버전이 이겨 조회수가 영영 NULL)
+                prev = captured["by_id"].get(eid)
+                if prev is not None:
+                    for k, v in p.items():
+                        if v is not None and prev.get(k) is None:
+                            prev[k] = v
+                continue
+
+            captured["seen"].add(eid)
+            captured["by_id"][eid] = p   # bucket 과 같은 객체를 참조
+            bucket.append(p)
+            if len(bucket) >= limit:
+                return
 
     def _wait_grace(bucket_key, limit):
         deadline = time.monotonic() + (L2_GRAPHQL_GRACE_MS / 1000.0)
@@ -588,105 +605,127 @@ def run(limit=BATCH_LIMIT, headless=HEADLESS, resume=True):
         ok = none = err = blocked = 0
         block_streak = 0
 
+        # 목록 수집에 쓰이는 쿼리 이름 전체 (그리드 + 릴스).
+        # 미등록 경고 판정에 사용 — 릴스 쿼리를 빼먹으면 오탐이 난다.
+        known_names = set(L2_POSTS_QUERY_NAMES) | set(L2_REELS_QUERY_NAMES)
+
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=headless)
+            # ⚠️ 컨텍스트 옵션은 login.py 와 반드시 동일해야 한다.
+            #    UA/viewport/locale 이 어긋나면 인스타는
+            #    "같은 쿠키인데 다른 브라우저"로 보고 세션을 의심한다.
             context = browser.new_context(
-                storage_state=str(SESSION_FILE),
-                locale=LOCALE,
-                user_agent=USER_AGENT,
+                **context_kwargs(storage_state=SESSION_FILE)
             )
+
+            # page 는 전 계정에서 재사용한다. 생성은 딱 1회.
             page = context.new_page()
+            _stealth.apply_stealth_sync(page)
 
-            for i, (channel_id, channel_name, url_norm) in enumerate(targets, 1):
-                username = _username_from_row(url_norm)
-                if not username:
-                    err += 1
-                    log_l2(conn, channel_id, url_norm or "", STATUS_FAILED,
-                           None, "no_username", None)
-                    log.info("  [%d/%d] SKIP (username 없음) ch=%s",
-                             i, len(targets), channel_id)
-                    continue
-
-                url = f"https://www.instagram.com/{username}/"
-                try:
-                    r = collect_posts(page, username)
-
-                    # raw 항상 저장
-                    if r["html"]:
-                        save_l2_html(username, r["html"])
-                    if r["raw_pages"]:
-                        save_l2_graphql(username, r["raw_pages"])
-
-                    if r["blocked"]:
-                        blocked += 1
-                        block_streak += 1
-                        log_l2(conn, channel_id, url, STATUS_FAILED,
-                               r["http_status"], "blocked", r["final_url"])
-                        log.warning("  [%d/%d] BLOCK @%s -> %s",
-                                    i, len(targets), username, r["final_url"])
-                        if block_streak >= STOP_ON_BLOCK:
-                            log.error("[L2] 연속 차단 %d회 -> 세션 보호 위해 중단",
-                                      STOP_ON_BLOCK)
-                            break
+            try:
+                for i, (channel_id, channel_name, url_norm) in enumerate(targets, 1):
+                    username = _username_from_row(url_norm)
+                    if not username:
+                        err += 1
+                        log_l2(conn, channel_id, url_norm or "", STATUS_FAILED,
+                               None, "no_username", None)
+                        log.info("  [%d/%d] SKIP (username 없음) ch=%s",
+                                 i, len(targets), channel_id)
                         continue
 
-                    if not r["posts"]:
-                        none += 1
+                    url = f"https://www.instagram.com/{username}/"
+                    try:
+                        r = collect_posts(page, username)
+
+                        # raw 항상 저장
+                        if r["html"]:
+                            save_l2_html(username, r["html"])
+                        if r["raw_pages"]:
+                            save_l2_graphql(username, r["raw_pages"])
+
+                        if r["blocked"]:
+                            blocked += 1
+                            block_streak += 1
+                            log_l2(conn, channel_id, url, STATUS_FAILED,
+                                   r["http_status"], "blocked", r["final_url"])
+                            log.warning("  [%d/%d] BLOCK @%s -> %s",
+                                        i, len(targets), username, r["final_url"])
+                            if block_streak >= STOP_ON_BLOCK:
+                                log.error(
+                                    "[L2] 연속 차단 %d회 -> 중단. "
+                                    "레이트 리밋일 수 있으니 쉬었다 재개하세요.",
+                                    STOP_ON_BLOCK)
+                                break
+                            continue
+
+                        if not r["posts"]:
+                            none += 1
+                            block_streak = 0
+                            log_l2(conn, channel_id, url, STATUS_OK,
+                                   r["http_status"], "empty", None)
+                            # 목록 쿼리를 하나도 못 잡았으면 '진짜 빈 계정'이
+                            # 아니라 friendly-name 미등록일 수 있다.
+                            unmatched = r["seen_names"] - known_names
+                            if not r["raw_pages"] and unmatched:
+                                log.warning(
+                                    "  [%d/%d] NONE  @%s (게시물 0) "
+                                    "⚠️ 미매칭 쿼리: %s",
+                                    i, len(targets), username,
+                                    ", ".join(sorted(unmatched)),
+                                )
+                            else:
+                                log.info("  [%d/%d] NONE  @%s (게시물 0)",
+                                         i, len(targets), username)
+                            continue
+
+                        n = save_to_db(conn, channel_id, r["posts"])
+                        ok += 1
                         block_streak = 0
                         log_l2(conn, channel_id, url, STATUS_OK,
-                               r["http_status"], "empty", None)
-                        # 목록 쿼리를 하나도 못 잡았으면 '진짜 빈 계정'이 아니라
-                        # friendly-name 미등록일 수 있다 → 로그로 티를 낸다.
-                        unmatched = r["seen_names"] - set(L2_POSTS_QUERY_NAMES)
-                        if not r["raw_pages"] and unmatched:
-                            log.warning(
-                                "  [%d/%d] NONE  @%s (게시물 0) "
-                                "⚠️ 미매칭 쿼리: %s",
-                                i, len(targets), username,
-                                ", ".join(sorted(unmatched)),
-                            )
-                        else:
-                            log.info("  [%d/%d] NONE  @%s (게시물 0)",
-                                     i, len(targets), username)
-                        continue
+                               r["http_status"], None, None)
+                        log.info("  [%d/%d] OK    @%s (posts=%d g=%d r=%d)",
+                                 i, len(targets), username, n,
+                                 r["n_grid"], r["n_reels"])
 
-                    n = save_to_db(conn, channel_id, r["posts"])
-                    ok += 1
-                    block_streak = 0
-                    log_l2(conn, channel_id, url, STATUS_OK,
-                           r["http_status"], None, None)
-                    log.info("  [%d/%d] OK    @%s (posts=%d)",
-                             i, len(targets), username, n)
+                    except Exception as e:
+                        err += 1
+                        log_l2(conn, channel_id, url, STATUS_FAILED,
+                               None, "exception", str(e)[:400])
+                        log.info("  [%d/%d] ERR   @%s | %r",
+                                 i, len(targets), username, e)
 
+                    lo, hi = L2_CHANNEL_GAP
+                    time.sleep(random.uniform(lo, hi))
+
+            finally:
+                # 크롤링 중 롤링된 쿠키를 다시 저장해 세션 수명을 늘린다.
+                # ⚠️ 예외/중단 시에도 반드시 실행되도록 finally 에 둔다.
+                try:
+                    context.storage_state(path=str(SESSION_FILE))
                 except Exception as e:
-                    err += 1
-                    log_l2(conn, channel_id, url, STATUS_FAILED,
-                           None, "exception", str(e)[:400])
-                    log.info("  [%d/%d] ERR   @%s | %r",
-                             i, len(targets), username, e)
-
-                lo, hi = L2_CHANNEL_GAP
-                time.sleep(random.uniform(lo, hi))
-
-            context.close()
-            browser.close()
+                    log.warning("세션 저장 실패: %r", e)
+                try:
+                    context.close()
+                except Exception:
+                    pass
+                try:
+                    browser.close()
+                except Exception:
+                    pass
 
         log.info("[L2] 완료: OK=%d NONE=%d BLOCK=%d ERR=%d",
                  ok, none, blocked, err)
-        log.info("  [%d/%d] OK    @%s (posts=%d g=%d r=%d)",
-                i, len(targets), username, n,
-                r["n_grid"], r["n_reels"])        
+
         # 관측된 friendly-name 요약 — 미등록 이름이 있으면 config 에 추가할 것
         if _SEEN_QUERY_NAMES:
             unknown = {k: v for k, v in _SEEN_QUERY_NAMES.items()
-                       if k not in L2_POSTS_QUERY_NAMES}
+                       if k not in known_names}
             if unknown:
                 log.warning("[L2] 미등록 friendly-name (config 확인 필요):")
                 for k, v in sorted(unknown.items(), key=lambda x: -x[1])[:15]:
                     log.warning("      %6d회  %s", v, k)
     finally:
         conn.close()
-
 
 if __name__ == "__main__":
     run(limit=BATCH_LIMIT, headless=HEADLESS, resume=True)

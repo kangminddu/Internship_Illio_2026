@@ -2,21 +2,23 @@
 범용 Seed: 엑셀(유튜브 URL 포함) → creators/channels 적재.
 - 컬럼을 '위치'가 아니라 '헤더 이름'으로 찾음 (별칭 사전).
 - 엑셀 경로/시트를 CLI 인자로 받음.
+- URL 검증/정규화는 lib/youtube_url_filter.py 로 일원화
+  (percent-encoded 한글 handle, 구형 custom URL, /videos/ 꼬리 모두 처리)
 
 사용법:
-  python -m crawler.seed --file 파일.xlsx
-  python -m crawler.seed --file 파일.xlsx --sheet "시트명"
+  python -m youtube.crawler.seed --file 파일.xlsx
+  python -m youtube.crawler.seed --file 파일.xlsx --sheet "시트명"
 """
 import re
 import argparse
 from datetime import datetime
 from openpyxl import load_workbook
 import pymysql
-from config import DB
+from youtube.config import DB
+from youtube.crawler.lib.youtube_url_filter import normalize_youtube_channel_url
 
 # ─────────────────────────────────────────────
-# 컬럼 별칭 사전: 엑셀마다 헤더명이 달라도 매칭
-# 새 엑셀 형식이 오면 여기에 별칭만 추가하면 됨
+# 컬럼 별칭 사전
 # ─────────────────────────────────────────────
 COLUMN_ALIASES = {
     "youtube":  ["유튜브", "youtubeurl", "youtube", "유튜브url", "youtube_url", "유튜브 url"],
@@ -29,14 +31,12 @@ COLUMN_ALIASES = {
 
 
 def normalize_header(h):
-    """헤더 비교용: 공백 제거 + 소문자."""
     if h is None:
         return ""
     return str(h).strip().replace(" ", "").lower()
 
 
 def build_column_map(header_row):
-    """엑셀 헤더 행 → {필드: 열인덱스} 매핑."""
     norm_headers = [normalize_header(h) for h in header_row]
     colmap = {}
     for field, aliases in COLUMN_ALIASES.items():
@@ -48,26 +48,12 @@ def build_column_map(header_row):
     return colmap
 
 
-def normalize_url(url):
-    if not url:
-        return None
-    url = str(url).strip()
-    if not url.startswith("http"):
-        url = "https://" + url
-    url = re.sub(r"\?.*$", "", url)
-    for suffix in ("/featured", "/videos", "/about", "/discussion",
-                   "/community", "/playlists", "/streams", "/shorts"):
-        if url.endswith(suffix):
-            url = url[:-len(suffix)]
-    return url.rstrip("/")
-
-
 def classify_status(u):
     if re.search(r"/channel/UC[\w-]{22}", u): return "resolved"
     if "/@" in u: return "handle_only"
     if "/c/" in u: return "custom_only"
     if "/user/" in u: return "user_legacy"
-    return "unresolved"
+    return "unresolved"   # 구형 custom URL(youtube.com/이름)도 여기로 → 크롤링 시 UC로 해소
 
 
 def clean(v):
@@ -86,7 +72,6 @@ def to_date(v):
 
 
 def get(row, colmap, field):
-    """colmap을 통해 안전하게 값 꺼내기 (컬럼 없으면 None)."""
     idx = colmap.get(field)
     if idx is None or idx >= len(row):
         return None
@@ -96,7 +81,6 @@ def get(row, colmap, field):
 def main(xlsx_path, sheet_name=None, key_prefix="SD"):
     wb = load_workbook(xlsx_path, read_only=True)
 
-    # 시트 결정: 지정 없으면 첫 시트
     if sheet_name and sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
     else:
@@ -127,6 +111,7 @@ def main(xlsx_path, sheet_name=None, key_prefix="SD"):
     inserted_ch = 0
     creator_only = 0
     skipped = 0
+    skip_reasons = {}   # 사유별 집계 (마지막에 요약 출력)
 
     with conn.cursor() as cur:
         for i, row in enumerate(rows[1:], 1):
@@ -156,13 +141,20 @@ def main(xlsx_path, sheet_name=None, key_prefix="SD"):
                 creator_only += 1
                 continue
 
+            # ── URL 검증 + 정규화 (한 번에) ──
+            url_norm, skip_reason = normalize_youtube_channel_url(youtube)
+            if not url_norm:
+                print(f"⚠️ Skip [{skip_reason}] : {youtube}")
+                skip_reasons[skip_reason] = skip_reasons.get(skip_reason, 0) + 1
+                creator_only += 1
+                continue
+
             cur.execute("SELECT creator_id FROM creators WHERE seed_key=%s", (seed_key,))
             creator_id = cur.fetchone()[0]
 
-            url_norm = normalize_url(youtube)
-            status = classify_status(youtube)
+            status = classify_status(url_norm)
             uc = None
-            m = re.search(r"(UC[\w-]{22})", youtube)
+            m = re.search(r"(UC[\w-]{22})", url_norm)
             if m:
                 uc = m.group(1)
 
@@ -178,10 +170,14 @@ def main(xlsx_path, sheet_name=None, key_prefix="SD"):
             inserted_ch += 1
 
     conn.close()
-    print(f"creators 총: {inserted_ch + creator_only}")
+    print(f"\ncreators 총: {inserted_ch + creator_only}")
     print(f"  ├ 유튜브 채널 생성: {inserted_ch}")
-    print(f"  └ creators만(유튜브 없음): {creator_only}")
+    print(f"  └ creators만(유튜브 없음/부적합): {creator_only}")
     print(f"닉네임 없어 skip: {skipped}")
+    if skip_reasons:
+        print("URL skip 사유별 집계:")
+        for reason, cnt in sorted(skip_reasons.items(), key=lambda x: -x[1]):
+            print(f"  - {reason}: {cnt}건")
     print("완료. python main.py --l1 로 시작.")
 
 

@@ -7,7 +7,7 @@ import pymysql
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
-from config import DB, EXPORT_DIR
+from youtube.config import DB, EXPORT_DIR
 
 sql = """
 SELECT
@@ -90,7 +90,7 @@ df["댓글작성자"] = df["댓글작성자"].apply(sanitize_formula)
 # ------------------------------------------------
 # Excel 저장
 # ------------------------------------------------
-filename = os.path.join(EXPORT_DIR, "L3_댓글정보_이메일.xlsx")
+filename = os.path.join(EXPORT_DIR, "L3_댓글정보_최종.xlsx")
 
 df.to_excel(
     filename,

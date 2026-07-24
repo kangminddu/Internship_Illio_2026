@@ -23,8 +23,8 @@ import pymysql
 from datetime import datetime
 
 
-from crawler.lib.youtube_parser import extract_emails
-from config import DB, CHZZK_USER_AGENT, CHZZK_TIMEOUT, CHZZK_DELAY
+from youtube.crawler.lib.youtube_parser import extract_emails
+from youtube.config import DB, CHZZK_USER_AGENT, CHZZK_TIMEOUT, CHZZK_DELAY
 
 HEADERS = {"User-Agent": CHZZK_USER_AGENT}
 REQUEST_TIMEOUT = CHZZK_TIMEOUT

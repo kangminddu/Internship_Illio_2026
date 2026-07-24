@@ -9,18 +9,18 @@ PIPELINE = ["l1", "email", "l2a", "l2b", "l3", "backfill", "metric", "export"]
 
 # 각 단계가 실제로 실행하는 모듈 매핑
 STAGE_MODULES = {
-    "l1":       [("crawler.crawler_l1_parallel", True)],
-    "email":    [("crawler.chzzk_email", False)], 
-    "l2a":      [("crawler.crawler_l2a", True)],
-    "l2b":      [("crawler.crawler_l2", True)],
-    "l3":       [("crawler.crawler_l3", True)],
-    "backfill": [("backfill_activity", True)],        
-    "metric":   [("metrics.calc_metrics", False),
-                 ("metrics.calc_l3_metrics", False)],
-    "export":   [("export.export_l1", False),
-                 ("export.export_l2", False),
-                 ("export.export_l3", False),
-                 ("export.export_metric", False)],
+    "l1":       [("youtube.crawler.crawler_l1_parallel", True)],
+    "email":    [("youtube.crawler.chzzk_email", False)], 
+    "l2a":      [("youtube.crawler.crawler_l2a", True)],
+    "l2b":      [("youtube.crawler.crawler_l2", True)],
+    "l3":       [("youtube.crawler.crawler_l3", True)],
+    "backfill": [("youtube.backfill_activity", True)],        
+    "metric":   [("youtube.metrics.calc_metrics", False),
+                 ("youtube.metrics.calc_l3_metrics", False)],
+    "export":   [("youtube.export.export_l1", False),
+                 ("youtube.export.export_l2", False),
+                 ("youtube.export.export_l3", False),
+                 ("youtube.export.export_metric", False)],
 }
 
 
@@ -81,7 +81,7 @@ def main(
     # Seed (지정되면 항상 먼저)
     # -----------------------------
     if seed_file:
-        run("crawler.load_seed", extra_args=["--file", seed_file])
+        run("youtube.crawler.seed", extra_args=["--file", seed_file])
 
     # -----------------------------
     # 실행할 단계 목록 결정

@@ -3,7 +3,17 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 import pymysql
 
-from config import DB
+try:
+    from instagram.config import DB
+except Exception:
+    from config import DB
+
+
+# ⚠️ L3 는 전체 게시물이 아니라 '댓글 1개 이상 + 1년 이내' 만 수집한다.
+#    (17,048건 중 6,972건). 따라서 아래 지표의 분모인 content_count 는
+#    '댓글이 수집된 콘텐츠 수'이지 '채널의 전체 게시물 수'가 아니다.
+#    콘텐츠가 너무 적으면 '고정 댓글러' 판정이 무의미해지므로 하한을 둔다.
+MIN_L3_CONTENTS = 3
 
 conn = pymysql.connect(**DB, autocommit=True)
 
@@ -28,10 +38,12 @@ with conn.cursor() as cur:
 
     channels = cur.fetchall()
 
-    print(f"L3 지표 계산 대상 : {len(channels)}개\n")
+    print(f"L3 지표 계산 대상 : {len(channels)}개")
+    print(f"최소 콘텐츠 수 : {MIN_L3_CONTENTS}\n")
 
     updated = 0
     skipped = 0
+    too_few = 0
 
     for channel_id, nickname in channels:
 
@@ -48,8 +60,10 @@ with conn.cursor() as cur:
 
         content_count = cur.fetchone()[0]
 
-        if content_count == 0:
-            skipped += 1
+        # 콘텐츠 1~2개로는 중복률/고정댓글러가 통계적으로 무의미하다.
+        # (2개 중 1개에만 댓글 달아도 '절반 이상' 이 되어버린다)
+        if content_count < MIN_L3_CONTENTS:
+            too_few += 1
             continue
 
         # --------------------------------------------------------
@@ -133,12 +147,14 @@ with conn.cursor() as cur:
             SET
                 commenter_overlap_rate = %s,
                 regular_commenter_count = %s,
-                avg_comment_length = %s
+                avg_comment_length = %s,
+                l3_content_count = %s
             WHERE channel_id=%s
         """, (
             round(commenter_overlap_rate, 2),
             regular_commenters,
             round(float(avg_comment_length), 1),
+            content_count,
             channel_id
         ))
 
@@ -169,4 +185,5 @@ print(
     f"\n완료"
     f" | 업데이트 {updated}개"
     f" | 스킵 {skipped}개"
+    f" | 콘텐츠부족 {too_few}개"
 )

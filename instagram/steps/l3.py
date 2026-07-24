@@ -21,6 +21,15 @@ steps/l3.py  (Instagram L3 — 댓글 수집 + 미디어 메타 보강)
   두 경로 모두 root_field 가 동일해서 parse_comments 를 공유한다:
     xdt_api__v1__media__media_id__comments__connection
 
+⚠️ 차단 감지 (2026-07-23 사고 기록)
+  레이트 리밋에 걸리면 인스타는 빈 페이지를 즉시 돌려준다.
+  URL 은 /p/... 그대로고 리다이렉트도 없어서 _looks_blocked 를 통과한다.
+  예전 코드는 이걸 '댓글 0'으로 오인해 6,500건을 헛돌며 empty 로 기록했다.
+  → 아래 3중 감지로 막는다:
+     ① goto 응답 4xx/5xx  ② goto 예외(ERR_HTTP_RESPONSE_CODE_FAILURE/429)
+     ③ HTML 에 COMMENTS_ROOT 구조 자체가 없음
+  정상 페이지는 댓글이 0개여도 comments__connection 구조는 존재한다.
+
 ⚠️ 미디어 메타 보강 (L2 릴스 누락분 복구)
   L2 릴스 탭(clips) 응답에는 taken_at / caption / video_duration 이 없다.
   그래서 릴스는 published_at 이 pk 복원값(부정확), caption 은 NULL 로 들어간다.
@@ -44,7 +53,8 @@ from datetime import datetime, timezone
 
 from playwright.sync_api import sync_playwright
 from playwright.sync_api import TimeoutError as PWTimeout
-
+from playwright_stealth import Stealth
+_stealth = Stealth()
 # ── config 연동 (실행 방식에 따라 import 경로 대응) ──
 try:
     from instagram.config import (
@@ -54,8 +64,6 @@ try:
         L3_GRAPHQL_DIR,
         LOG_DIR,
         L3_LOG_FILE,
-        LOCALE,
-        USER_AGENT,
         HEADLESS,
         DB,
         PLATFORM,
@@ -76,6 +84,9 @@ try:
 
         BATCH_LIMIT,
         STOP_ON_BLOCK,
+        context_kwargs,
+        L3_MIN_COMMENTS,
+        L3_MAX_AGE_MONTHS,
     )
 except Exception:
     from config import (
@@ -85,8 +96,6 @@ except Exception:
         L3_GRAPHQL_DIR,
         LOG_DIR,
         L3_LOG_FILE,
-        LOCALE,
-        USER_AGENT,
         HEADLESS,
         DB,
         PLATFORM,
@@ -107,6 +116,9 @@ except Exception:
 
         BATCH_LIMIT,
         STOP_ON_BLOCK,
+        context_kwargs,
+        L3_MIN_COMMENTS,
+        L3_MAX_AGE_MONTHS,
     )
 
 try:
@@ -137,6 +149,13 @@ _SEEN_QUERY_NAMES = {}
 
 # SSR / GraphQL 공통 root_field
 COMMENTS_ROOT = "xdt_api__v1__media__media_id__comments__connection"
+
+# goto 예외 문자열 중 차단으로 간주할 패턴
+_BLOCK_ERR_MARKERS = (
+    "ERR_HTTP_RESPONSE_CODE_FAILURE",
+    "ERR_TOO_MANY_REQUESTS",
+    "429",
+)
 
 _INLINE_JSON_RE = re.compile(
     r'<script[^>]+type="application/json"[^>]*>(.*?)</script>', re.S
@@ -292,6 +311,12 @@ def _looks_blocked(final_url):
     return False
 
 
+def _is_block_error(exc):
+    """goto 예외가 레이트 리밋/차단성인지."""
+    s = str(exc)
+    return any(m in s for m in _BLOCK_ERR_MARKERS)
+
+
 # =========================================================
 # SSR HTML 파싱 — 댓글
 # =========================================================
@@ -413,20 +438,28 @@ def collect_comments(page, external_id):
       final_url    : 최종 URL
       http_status  : goto 응답 코드
       blocked      : 차단 감지 여부
+      block_reason : 차단으로 본 이유 (진단/로그용)
       from_html    : SSR 폴백으로 댓글을 수집했는지 (진단용)
       media_meta   : SSR 에서 뽑은 미디어 메타 (없으면 None)
       seen_names   : 이 게시물에서 관측한 friendly-name 집합 (진단용)
+
+    ⚠️ goto 는 이 함수 전체에서 정확히 1회만 호출한다.
+       (두 번 부르면 요청량이 2배가 되어 레이트 리밋을 자초한다)
     """
     url = f"https://www.instagram.com/p/{external_id}/"
     result = {
         "comments": [], "raw_pages": [], "html": None,
         "final_url": url, "http_status": None, "blocked": False,
-        "from_html": False, "media_meta": None, "seen_names": set(),
+        "block_reason": None, "from_html": False,
+        "media_meta": None, "seen_names": set(),
     }
 
-    # --- 댓글 GraphQL 캡처 리스너 (goto 이전 등록) ---
-    # SSR 이 주 경로지만, 스크롤/더보기로 GraphQL 이 오는 경우도 있어 유지.
     captured = {"pages": [], "comments": [], "seen": set()}
+
+    def _mark_blocked(reason):
+        result["blocked"] = True
+        if result["block_reason"] is None:
+            result["block_reason"] = reason
 
     def _add_comments(comments):
         """중복 제거하며 담는다. 한도 도달 시 True 반환."""
@@ -465,27 +498,35 @@ def collect_comments(page, external_id):
             return
         _add_comments(comments)
 
+    # ⚠️ 리스너는 goto 이전에 등록해야 SSR 외 응답도 놓치지 않는다.
     page.on("response", _on_response)
 
     try:
-        # --- goto ---
+        # ===== goto (이 함수에서 유일한 네비게이션) =====
         try:
             resp = page.goto(url, wait_until="domcontentloaded",
                              timeout=L3_GOTO_TIMEOUT_MS)
             result["http_status"] = resp.status if resp else None
+            # ① 4xx/5xx → 레이트 리밋 또는 삭제된 게시물
+            if resp and resp.status >= 400:
+                _mark_blocked(f"http_{resp.status}")
         except PWTimeout:
             pass
-        except Exception:
-            pass
+        except Exception as e:
+            # ② net::ERR_HTTP_RESPONSE_CODE_FAILURE 등
+            if _is_block_error(e):
+                _mark_blocked(f"goto_error:{type(e).__name__}")
+            elif DEBUG_GQL:
+                print(f"  [goto 실패] {e!r}", flush=True)
 
         try:
             result["final_url"] = page.url
         except Exception:
             pass
 
-        # 차단 URL 이면 즉시 종료
-        if _looks_blocked(result["final_url"]):
-            result["blocked"] = True
+        # 로그인/챌린지 리다이렉트
+        if not result["blocked"] and _looks_blocked(result["final_url"]):
+            _mark_blocked("redirect_login")
 
         # --- 렌더 대기 ---
         # SSR 이 주 경로라 GraphQL 을 오래 기다릴 필요는 없지만,
@@ -504,7 +545,6 @@ def collect_comments(page, external_id):
         # ⚠️ 기본 config 는 L3_MAX_SCROLLS=0 이라 이 블록은 돌지 않는다.
         #    인스타 댓글은 본문이 아니라 별도 스크롤 컨테이너에 있어서
         #    mouse.wheel 로는 페이지네이션이 안 터질 수 있음.
-        #    더 모으려면 컨테이너 직접 스크롤 구현이 필요하다.
         if not result["blocked"] and len(captured["comments"]) < L3_COMMENT_LIMIT:
             prev = len(captured["comments"])
             stall = 0
@@ -540,6 +580,13 @@ def collect_comments(page, external_id):
         result["html"] = page.content()
     except Exception:
         result["html"] = None
+
+    # ③ SSR 구조 자체가 없으면 차단으로 간주.
+    #    정상 페이지는 댓글이 0개여도 comments__connection 은 존재한다.
+    #    이 검사가 없으면 레이트 리밋을 'empty' 로 오기록해 resume 이 영영 건너뛴다.
+    if not result["blocked"] and not captured["comments"]:
+        if not result["html"] or COMMENTS_ROOT not in result["html"]:
+            _mark_blocked("no_ssr_payload")
 
     # --- SSR HTML 폴백: 댓글 (실질적인 주 경로) ---
     if not captured["comments"] and not result["blocked"]:
@@ -654,10 +701,14 @@ def log_l3(conn, channel_id, url, status, http_status=None,
 def fetch_targets(conn, limit=None, resume=True):
     """
     L3 대상: 댓글을 수집할 게시물(contents).
-    resume: 이미 L3 success/empty 인 게시물 제외.
 
-    ⚠️ empty 도 '처리 완료'로 간주한다 (L2 와 동일한 의미론).
-       파서/수집경로를 고친 뒤 재수집하려면 empty 로그를 먼저 지울 것:
+    범위 제한 (config):
+      - cs.comment_count >= L3_MIN_COMMENTS  : 댓글 0개는 방문 낭비
+      - published_at > L3_MAX_AGE_MONTHS 이내 : 오래된 건 지표 가치 낮음
+    정렬은 댓글 많은 순 — 중간에 끊겨도 값어치 있는 것부터 확보된다.
+
+    resume: 이미 L3 success/empty 인 게시물 제외.
+    ⚠️ 수집경로를 고친 뒤 재수집하려면 empty 로그를 먼저 지울 것:
          DELETE FROM crawl_logs WHERE layer='L3' AND error_type='empty';
     """
     sql = """
@@ -665,10 +716,25 @@ def fetch_targets(conn, limit=None, resume=True):
     FROM contents ct
     JOIN channels ch
       ON ct.channel_id = ch.channel_id
+    -- 콘텐츠별 최신 스냅샷의 댓글 수
+    JOIN (
+        SELECT cs1.content_id, cs1.comment_count
+        FROM content_snapshots cs1
+        JOIN (
+            SELECT content_id, MAX(captured_at) AS m
+            FROM content_snapshots
+            GROUP BY content_id
+        ) t
+          ON cs1.content_id = t.content_id
+         AND cs1.captured_at = t.m
+    ) cs
+      ON cs.content_id = ct.content_id
     WHERE ch.platform=%s
       AND ct.external_id IS NOT NULL
+      AND cs.comment_count >= %s
+      AND ct.published_at > DATE_SUB(NOW(), INTERVAL %s MONTH)
     """
-    params = [PLATFORM]
+    params = [PLATFORM, L3_MIN_COMMENTS, L3_MAX_AGE_MONTHS]
 
     if resume:
         sql += """
@@ -683,7 +749,8 @@ def fetch_targets(conn, limit=None, resume=True):
         )
         """
 
-    sql += " ORDER BY ct.content_id"
+    # 댓글 많은 순 → 중단되더라도 가치 높은 것부터 확보
+    sql += " ORDER BY cs.comment_count DESC, ct.content_id"
 
     if limit:
         sql += " LIMIT %d" % int(limit)
@@ -721,85 +788,107 @@ def run(limit=BATCH_LIMIT, headless=HEADLESS, resume=True):
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=headless)
+            # ⚠️ 컨텍스트 옵션은 login.py / l2.py 와 반드시 동일해야 한다.
+            #    UA/viewport/locale 이 어긋나면 인스타는
+            #    "같은 쿠키인데 다른 브라우저"로 보고 세션을 의심한다.
             context = browser.new_context(
-                storage_state=str(SESSION_FILE),
-                locale=LOCALE,
-                user_agent=USER_AGENT,
+                **context_kwargs(storage_state=SESSION_FILE)
             )
+
+            # page 는 전 게시물에서 재사용한다. 생성은 딱 1회.
             page = context.new_page()
+            _stealth.apply_stealth_sync(page)
 
-            for i, (content_id, channel_id, external_id) in enumerate(targets, 1):
-                url = f"https://www.instagram.com/p/{external_id}/"
-                try:
-                    r = collect_comments(page, external_id)
+            try:
+                for i, (content_id, channel_id, external_id) in enumerate(targets, 1):
+                    url = f"https://www.instagram.com/p/{external_id}/"
+                    try:
+                        r = collect_comments(page, external_id)
 
-                    # raw 항상 저장
-                    if r["html"]:
-                        save_l3_html(external_id, r["html"])
-                    if r["raw_pages"]:
-                        save_l3_graphql(external_id, r["raw_pages"])
+                        # raw 항상 저장
+                        if r["html"]:
+                            save_l3_html(external_id, r["html"])
+                        if r["raw_pages"]:
+                            save_l3_graphql(external_id, r["raw_pages"])
 
-                    if r["blocked"]:
-                        blocked += 1
-                        block_streak += 1
-                        log_l3(conn, channel_id, url, STATUS_FAILED,
-                               r["http_status"], "blocked", r["final_url"])
-                        log.warning("  [%d/%d] BLOCK %s -> %s",
-                                    i, len(targets), external_id, r["final_url"])
-                        if block_streak >= STOP_ON_BLOCK:
-                            log.error("[L3] 연속 차단 %d회 -> 세션 보호 위해 중단",
-                                      STOP_ON_BLOCK)
-                            break
-                        continue
+                        if r["blocked"]:
+                            blocked += 1
+                            block_streak += 1
+                            log_l3(conn, channel_id, url, STATUS_FAILED,
+                                   r["http_status"], "blocked",
+                                   r["block_reason"] or r["final_url"])
+                            log.warning("  [%d/%d] BLOCK %s (%s) streak=%d",
+                                        i, len(targets), external_id,
+                                        r["block_reason"], block_streak)
+                            if block_streak >= STOP_ON_BLOCK:
+                                log.error(
+                                    "[L3] 연속 차단 %d회 -> 중단. "
+                                    "레이트 리밋일 수 있으니 몇 시간 쉬었다 재개하세요.",
+                                    STOP_ON_BLOCK)
+                                break
+                            continue
 
-                    # 미디어 메타 보강 — 댓글 유무와 무관하게 항상 시도.
-                    # (댓글 0개인 릴스도 caption/published_at 은 채워야 한다)
-                    meta_ok = False
-                    if L3_BACKFILL_MEDIA:
-                        try:
-                            meta_ok = update_content_meta(
-                                conn, content_id, r["media_meta"]
-                            )
-                        except Exception as e:
-                            log.warning("  [%d/%d] META 실패 %s | %r",
-                                        i, len(targets), external_id, e)
-                    if meta_ok:
-                        meta_filled += 1
+                        # 미디어 메타 보강 — 댓글 유무와 무관하게 항상 시도.
+                        # (댓글 0개인 릴스도 caption/published_at 은 채워야 한다)
+                        meta_ok = False
+                        if L3_BACKFILL_MEDIA:
+                            try:
+                                meta_ok = update_content_meta(
+                                    conn, content_id, r["media_meta"]
+                                )
+                            except Exception as e:
+                                log.warning("  [%d/%d] META 실패 %s | %r",
+                                            i, len(targets), external_id, e)
+                        if meta_ok:
+                            meta_filled += 1
 
-                    if not r["comments"]:
-                        none += 1
+                        if not r["comments"]:
+                            none += 1
+                            block_streak = 0
+                            log_l3(conn, channel_id, url, STATUS_OK,
+                                   r["http_status"], "empty", None)
+                            log.info("  [%d/%d] NONE  %s (댓글 0%s)",
+                                     i, len(targets), external_id,
+                                     " meta" if meta_ok else "")
+                            continue
+
+                        n = save_to_db(conn, content_id, r["comments"])
+                        ok += 1
+                        if r["from_html"]:
+                            from_html += 1
                         block_streak = 0
                         log_l3(conn, channel_id, url, STATUS_OK,
-                               r["http_status"], "empty", None)
-                        log.info("  [%d/%d] NONE  %s (댓글 0%s)",
-                                 i, len(targets), external_id,
+                               r["http_status"], None, None)
+                        log.info("  [%d/%d] OK    %s (comments=%d%s%s)",
+                                 i, len(targets), external_id, n,
+                                 " ssr" if r["from_html"] else "",
                                  " meta" if meta_ok else "")
-                        continue
 
-                    n = save_to_db(conn, content_id, r["comments"])
-                    ok += 1
-                    if r["from_html"]:
-                        from_html += 1
-                    block_streak = 0
-                    log_l3(conn, channel_id, url, STATUS_OK,
-                           r["http_status"], None, None)
-                    log.info("  [%d/%d] OK    %s (comments=%d%s%s)",
-                             i, len(targets), external_id, n,
-                             " ssr" if r["from_html"] else "",
-                             " meta" if meta_ok else "")
+                    except Exception as e:
+                        err += 1
+                        log_l3(conn, channel_id, url, STATUS_FAILED,
+                               None, "exception", str(e)[:400])
+                        log.info("  [%d/%d] ERR   %s | %r",
+                                 i, len(targets), external_id, e)
 
+                    lo, hi = L3_CONTENT_GAP
+                    time.sleep(random.uniform(lo, hi))
+
+            finally:
+                # 크롤링 중 롤링된 쿠키를 다시 저장해 세션 수명을 늘린다.
+                # ⚠️ 차단 중단(break)이나 예외 시에도 반드시 실행되도록 finally.
+                try:
+                    context.storage_state(path=str(SESSION_FILE))
                 except Exception as e:
-                    err += 1
-                    log_l3(conn, channel_id, url, STATUS_FAILED,
-                           None, "exception", str(e)[:400])
-                    log.info("  [%d/%d] ERR   %s | %r",
-                             i, len(targets), external_id, e)
-
-                lo, hi = L3_CONTENT_GAP
-                time.sleep(random.uniform(lo, hi))
-
-            context.close()
-            browser.close()
+                    log.warning("세션 저장 실패: %r", e)
+                try:
+                    context.close()
+                except Exception:
+                    pass
+                try:
+                    browser.close()
+                except Exception:
+                    pass
 
         log.info("[L3] 완료: OK=%d (SSR=%d) NONE=%d BLOCK=%d ERR=%d | META보강=%d",
                  ok, from_html, none, blocked, err, meta_filled)
