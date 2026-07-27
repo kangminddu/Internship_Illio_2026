@@ -42,7 +42,7 @@ steps/l3.py  (Instagram L3 — 댓글 수집 + 미디어 메타 보강)
     IG_DEBUG_GQL=1 python -m instagram.steps.l3
   '*' 표시가 매칭된 쿼리. 새 이름이 보이면 config 에 추가할 것.
 """
-
+from zoneinfo import ZoneInfo
 import os
 import json
 import re
@@ -257,7 +257,7 @@ def _dt(value):
     if isinstance(value, datetime):
         return value
     try:
-        return datetime.fromtimestamp(int(value), timezone.utc).replace(tzinfo=None)
+        return datetime.fromtimestamp(int(value), ZoneInfo("Asia/Seoul")).replace(tzinfo=None)
     except Exception:
         return value  # 문자열 datetime 등은 DB 가 파싱하도록 그대로
 

@@ -182,6 +182,7 @@ with conn.cursor() as cur:
         JOIN channels ch
             ON cm.channel_id = ch.channel_id
         WHERE ch.platform = 'instagram'
+        AND DATE(cm.calculated_at) = CURDATE()
     """)
 
     # ---------------------------------------------------------
@@ -203,8 +204,33 @@ with conn.cursor() as cur:
     """)
     followers = {r[0]: r[1] for r in cur.fetchall() if r[1]}
     print(f"팔로워 확보 채널 : {len(followers)}")
-
-    # Instagram 채널만 대상
+    print("채널 활동성 판정")
+    cur.execute("""
+        UPDATE channels ch
+        JOIN (
+            SELECT channel_id,
+                   SUM(published_at >= DATE_SUB(NOW(), INTERVAL 90 DAY))  AS cnt_90d,
+                   SUM(published_at >= DATE_SUB(NOW(), INTERVAL 180 DAY)) AS cnt_180d
+            FROM contents
+            WHERE published_at IS NOT NULL
+              AND content_type IN ('feed_image','carousel','reels')
+            GROUP BY channel_id
+        ) t ON t.channel_id = ch.channel_id
+        SET ch.channel_activity_status =
+            CASE
+              WHEN t.cnt_90d  >= 15 THEN 'active'
+              WHEN t.cnt_180d >= 15 THEN 'low_active'
+              ELSE 'inactive'
+            END
+        WHERE ch.platform = 'instagram'
+    """)
+    print(f"  활동성 갱신: {cur.rowcount}건")
+    cur.execute("""
+        SELECT channel_activity_status, COUNT(*)
+        FROM channels WHERE platform='instagram'
+        GROUP BY channel_activity_status
+        """)
+    print("     활동성 분포: " + ", ".join(f"{k}={v}" for k, v in cur.fetchall()))
     cur.execute("""
         SELECT c.channel_id
         FROM channels c

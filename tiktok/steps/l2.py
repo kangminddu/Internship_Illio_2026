@@ -4,7 +4,7 @@ import random
 import asyncio
 from time import monotonic
 from datetime import datetime, timezone, timedelta
-
+from zoneinfo import ZoneInfo
 
 from playwright.async_api import async_playwright
 from tiktok.antibot import browser, behavior
@@ -162,10 +162,10 @@ async def wait_until_solved(page, poll=CAPTCHA_POLL, max_wait=CAPTCHA_MAX_WAIT):
 def _dt(unix_sec):
     if not unix_sec:
         return None
-    return datetime.fromtimestamp(unix_sec, tz=timezone.utc).replace(tzinfo=None)
+    return datetime.fromtimestamp(unix_sec, tz=ZoneInfo("Asia/Seoul")).replace(tzinfo=None)
 
 def classify_activity(conn, channel_id):
-    now = datetime.utcnow()
+    now = datetime.now()
 
     with conn.cursor() as cur:
         cur.execute("""

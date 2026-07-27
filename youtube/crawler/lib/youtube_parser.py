@@ -18,7 +18,7 @@ crawler_l1.py, crawler_l2.py, crawler_l2a.py, crawler_l1_parallel.py 에서 공�
 - parse_joined_date에 영어 날짜 형식 추가: /about?hl=en 페이지에서 개설일이
   항상 None으로 저장되던 버그 수정.
 """
-
+from zoneinfo import ZoneInfo
 import re
 import json
 import threading
@@ -539,6 +539,10 @@ def parse_watch_page(video_id):
     if m:
         try:
             dt = datetime.fromisoformat(m.group(1))
+            # publishDate 에 오프셋(-07:00, Z 등)이 붙어 오는 경우가 있다.
+            # strftime 은 tz 정보를 버리므로, 오프셋이 있으면 KST 로 정규화한다.
+            if dt.tzinfo is not None:
+                dt = dt.astimezone(ZoneInfo("Asia/Seoul")).replace(tzinfo=None)
             result["published_at"] = dt.strftime("%Y-%m-%d %H:%M:%S")
         except ValueError:
             result["published_at"] = m.group(1)[:10]

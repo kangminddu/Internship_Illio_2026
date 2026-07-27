@@ -1,5 +1,5 @@
 # tiktok/steps/l3.py
-
+from zoneinfo import ZoneInfo
 import asyncio
 import random
 from time import monotonic
@@ -180,7 +180,7 @@ def save_comments(conn, content_id, comments):
             published = None
             if c.get("published_at"):
                 published = datetime.fromtimestamp(
-                    c["published_at"], tz=timezone.utc
+                    c["published_at"], tz=ZoneInfo("Asia/Seoul")
                 ).replace(tzinfo=None)
 
             cur.execute(INSERT_COMMENT, (

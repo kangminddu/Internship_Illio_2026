@@ -26,7 +26,7 @@ L1 과의 차이(틱톡 L2 대비):
     IG_DEBUG_GQL=1 python -m instagram.steps.l2
   새 쿼리 이름이 보이면 config.L2_POSTS_QUERY_NAMES 에 추가할 것.
 """
-
+from zoneinfo import ZoneInfo
 import os
 import json
 import re
@@ -231,7 +231,7 @@ def _dt(unix_sec):
     if not unix_sec:
         return None
     try:
-        return datetime.fromtimestamp(int(unix_sec), timezone.utc).replace(tzinfo=None)
+        return datetime.fromtimestamp(int(unix_sec), ZoneInfo("Asia/Seoul")).replace(tzinfo=None)
     except Exception:
         return None
 

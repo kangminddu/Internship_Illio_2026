@@ -56,7 +56,7 @@ rc = RateController(L2A_MIN_INTERVAL, BACKOFF_BASE,
 
 def classify_activity(conn, channel_id, now=None):
     """DB contents 기준: 180일 내 10개↑ active / 365일 내 10개↑ low_active / 그 외 inactive"""
-    now = now or datetime.utcnow()
+    now = now or datetime.now()
     with conn.cursor() as cur:
         cur.execute("""
             SELECT SUM(published_at >= %s), SUM(published_at >= %s)
