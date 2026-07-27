@@ -30,7 +30,7 @@ from openpyxl import load_workbook
 # =========================================================
 # 엑셀 기본 경로: reader.py 위치 기준으로 계산 (실행 위치와 무관하게 동작)
 #   instagram/reader.py  ->  ../youtube/SNS_정보.xlsx
-DEFAULT_EXCEL = Path(__file__).resolve().parent.parent / "youtube" / "SNS_정보.xlsx"
+DEFAULT_EXCEL = Path(__file__).resolve().parent.parent / "SNS_정보.xlsx"
 
 # username 으로 오면 안 되는 예약 경로 (실제 프로필이 아님)
 INVALID_PATHS = {

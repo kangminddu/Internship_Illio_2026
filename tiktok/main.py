@@ -1,10 +1,16 @@
 # tiktok/main.py
-
+import os
+import sys
 import argparse
 import asyncio
 
 from tiktok import config
 
+os.environ["PYTHONUTF8"] = "1"
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
 # 파이프라인 단계 순서
 PIPELINE = ["l1", "l2", "l3"]
 

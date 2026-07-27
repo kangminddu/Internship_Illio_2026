@@ -294,7 +294,7 @@ def process_one(channel):
                 counter["rate_limited"] += 1
             level = limiter.report_429()
             if level >= STOP_ON_429:
-                print(f"\n🛑 백오프 {level}라운드 후에도 429 지속 — 전체 중단. "
+                print(f"\n[STOP] 백오프 {level}라운드 후에도 429 지속 — 전체 중단. "
                       f"수 시간 뒤 재실행 권장 (resume은 crawl_logs 기준 자동).")
                 stop_flag.set()
                 return
@@ -366,16 +366,25 @@ def main():
         with ThreadPoolExecutor(max_workers=L1_WORKERS) as ex:
             list(ex.map(process_one, channels))
     except KeyboardInterrupt:
-        print("\n⏹️  중단 요청 — 진행 중인 채널만 마치고 종료합니다...")
+        print("\n[STOP]  중단 요청 — 진행 중인 채널만 마치고 종료합니다...")
         stop_flag.set()
 
     elapsed = time.time() - start
-    print(f"\n=== 완료: ok={counter['ok']} fail={counter['fail']} "
-          f"429={counter['rate_limited']} 403={counter['http403']} "
-          f"dup={counter['duplicate']} dberr={counter['db_error']} "
-          f"| {elapsed:.0f}초 ===")
+    print("\n" + "=" * 60)
+    print(
+        f"[DONE] "
+        f"ok={counter['ok']} "
+        f"fail={counter['fail']} "
+        f"429={counter['rate_limited']} "
+        f"403={counter['http403']} "
+        f"dup={counter['duplicate']} "
+        f"dberr={counter['db_error']} "
+        f"time={elapsed:.0f}s"
+    )
+    print("=" * 60)
+
     if stop_flag.is_set():
-        print("⚠️ 중단됨. 이미 처리된 채널은 자동 skip되므로 재실행하면 이어서 갑니다.")
+        print("[INFO] 중단되었습니다. 다시 실행하면 이어서 진행합니다.")
 
 
 if __name__ == "__main__":

@@ -20,27 +20,27 @@ PIPELINE = [
 # ------------------------------------------------
 STAGE_MODULES = {
     "l1": [
-        ("steps.l1", True),
+        ("instagram.steps.l1", True),
     ],
 
     "l2": [
-        ("steps.l2", True),
+        ("instagram.steps.l2", True),
     ],
 
     "l3": [
-        ("steps.l3", True),
+        ("instagram.steps.l3", True),
     ],
 
     "metric": [
-        ("metric.calc_metric", False),
-        ("metric.calc_l3_metric", False),
+        ("instagram.metric.calc_metric", False),
+        ("instagram.metric.calc_l3_metric", False),
     ],
 
     "export": [
-        ("export.export_l1", False),
-        ("export.export_l2", False),
-        ("export.export_l3", False),
-        ("export.export_metric", False),
+        ("instagram.export.export_l1", False),
+        ("instagram.export.export_l2", False),
+        ("instagram.export.export_l3", False),
+        ("instagram.export.export_metric", False),
     ],
 }
 
