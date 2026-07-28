@@ -185,10 +185,12 @@ def is_blocked_page(url, title):
 async def scrape_comments(page, video_id):
     """영상 1개 댓글 긁기. 반환 (payload 리스트, 'blocked'|None)"""
     seen = []
-
+    _bg_tasks = set()
     def on_resp(response):
         if "youtubei/v1/next" in response.url:
-            asyncio.create_task(_grab(response, seen))
+            t = asyncio.create_task(_grab(response, seen))
+            _bg_tasks.add(t)
+            t.add_done_callback(_bg_tasks.discard)
 
     async def _grab(response, seen):
         try:
@@ -215,16 +217,18 @@ async def scrape_comments(page, video_id):
 
         comments = {}
         last, stable = -1, 0
+        processed = 0
         for i in range(MAX_SCROLLS):
             if stop_event.is_set():
                 break
             await page.evaluate("window.scrollBy(0, 800)")
             await page.wait_for_timeout(800)
-            for data in seen:
+            for data in seen[processed:]:
                 for pl in find_payloads(data):
                     cid = pl.get("properties", {}).get("commentId", "")
                     if cid:
                         comments[cid] = pl
+            processed = len(seen)
             if len(comments) >= COMMENT_LIMIT:
                 break
             if len(comments) == last and len(comments) > 0:
@@ -315,11 +319,17 @@ async def process_channel(browser, sem, channel_id, nickname, channel_url):
                     SELECT content_id, external_id, content_type
                     FROM contents
                     WHERE channel_id=%s AND content_type IN ('video','shorts')
-                    ORDER BY published_at DESC
+                    ORDER BY published_at DESC, content_id DESC
                     LIMIT %s
                 """, (channel_id, VIDEOS_PER_CHANNEL))
                 videos = cur.fetchall()
-
+            if not videos:
+                log_channel(conn, channel_id, safe_url, "failed",
+                            "no_contents", "L2a 미완료 또는 콘텐츠 0건")
+                counter["fail"] += 1
+                print(f"    [진행중] ch={channel_id} ({nickname}) contents 없음 -> skip")
+                return
+            
             context = await browser.new_context()
             # consent 페이지 자체를 우회 (클릭 fallback은 scrape 안에 유지)
             await context.add_cookies([{
@@ -361,7 +371,7 @@ async def process_channel(browser, sem, channel_id, nickname, channel_url):
                     await rc.report_success()
                     break
 
-                if payloads is None:
+                if payloads is None or sig == "blocked":
                     err_videos += 1
                     continue
                 n = save_comments(conn, content_id, payloads)
@@ -419,6 +429,7 @@ async def main(channel_id=None):
         WHERE ch.platform='youtube'
           AND ch.channel_existence_status='normal'
           AND ch.channel_id_status <> 'duplicate'
+          AND ch.channel_activity_status IN ('active', 'low_active')
         """
         params = []
         if channel_id is None:

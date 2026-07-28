@@ -7,7 +7,13 @@ def main():
     conn = pymysql.connect(**DB, autocommit=True)
     try:
         with conn.cursor() as cur:
-            cur.execute("SELECT channel_id FROM channels WHERE platform='youtube'")
+            cur.execute("""
+                    SELECT channel_id FROM channels
+                    WHERE platform='youtube'
+                    AND channel_existence_status='normal'
+                    AND channel_id_status <> 'duplicate'
+                    AND channel_id IN (SELECT DISTINCT channel_id FROM contents)
+                """)
             ids = [r[0] for r in cur.fetchall()]
 
         changed = 0

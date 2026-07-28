@@ -21,6 +21,9 @@ import threading
 import pymysql
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
+
+KST = ZoneInfo("Asia/Seoul")
 
 from youtube.crawler.lib.youtube_parser import parse_watch_page
 from youtube.crawler.lib.rate_control import RateController
@@ -42,7 +45,10 @@ try:
     from youtube.config import L1_BACKOFF_BASE as BACKOFF_BASE
 except ImportError:
     BACKOFF_BASE = 60
-
+try:
+    from youtube.config import L2_REFRESH_DAYS
+except ImportError:
+    L2_REFRESH_DAYS = 7
 RECENT_N = 15
 MAX_429_RETRY = 3        # 영상 1개당 429 재시도 횟수
 
@@ -89,7 +95,7 @@ def process_channel(channel):
                 cur.execute("""
                     SELECT content_id, external_id FROM contents
                     WHERE channel_id=%s AND content_type='video'
-                    ORDER BY published_at DESC LIMIT %s
+                    ORDER BY published_at DESC, content_id DESC LIMIT %s
                 """, (channel_id, RECENT_N))
                 videos = list(cur.fetchall())
                 cur.execute("""
@@ -99,7 +105,18 @@ def process_channel(channel):
                     ORDER BY content_id DESC LIMIT %s
                 """, (channel_id, RECENT_N))
                 videos.extend(cur.fetchall())
-
+                # 콘텐츠 없음 = 수집 실패, success 기록 금지
+                if not videos:
+                    cur.execute("""
+                        INSERT INTO crawl_logs
+                        (channel_id, target_url, layer, status, http_status,
+                        error_type, error_detail)
+                        VALUES (%s, %s, 'L2b', 'failed', NULL, %s, %s)        
+                        """, (channel_id, f"channel_{channel_id}",
+                              "no_contents", "L2a 미완료 또는 콘텐츠 0건"))
+                    with lock:
+                        counter["done"] += 1
+                    return
                 for content_id, video_id in videos:
                     if stop_flag.is_set():
                         return               # ← 중간 중단: success 기록 없이 종료
@@ -134,7 +151,7 @@ def process_channel(channel):
                           view_count=VALUES(view_count),
                           like_count=VALUES(like_count),
                           comment_count=VALUES(comment_count)
-                    """, (content_id, datetime.now(timezone.utc),
+                    """, (content_id, datetime.now(KST),
                           result.get("view_count"), result.get("like_count"),
                           result.get("comment_count")))
                     with lock:
@@ -192,10 +209,11 @@ def main():
               AND channel_id NOT IN (
                   SELECT channel_id FROM crawl_logs
                   WHERE layer='L2b' AND status='success' AND channel_id IS NOT NULL
+                    AND attempted_at >= NOW() - INTERVAL %s DAY
               )
             ORDER BY FIELD(channel_activity_status,
                            'active','low_active','inactive'), channel_id
-        """)
+        """, (L2_REFRESH_DAYS))
         channels = cur.fetchall()
     conn.close()
 

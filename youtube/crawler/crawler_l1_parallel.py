@@ -23,7 +23,8 @@ import threading
 import pymysql
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
-
+from zoneinfo import ZoneInfo
+KST = ZoneInfo("Asia/Seoul")
 from youtube.crawler.lib.youtube_parser import fetch_channel_l1
 from youtube.config import DB, L1_WORKERS, BATCH_LIMIT, STOP_ON_429
 
@@ -47,6 +48,11 @@ try:
     from youtube.config import L1_REST_SECONDS
 except ImportError:
     L1_REST_SECONDS = 2100      # 35분
+
+try:
+    from youtube.config import L1_REFRESH_DAYS
+except ImportError:
+    L1_REFRESH_DAYS = 7
 
 lock = threading.Lock()
 counter = {"done": 0, "ok": 0, "fail": 0, "rate_limited": 0,
@@ -195,7 +201,7 @@ def save_result(channel_id, creator_id, crawl_url, r, dur_ms):
                       follower_count=VALUES(follower_count),
                       total_view_count=VALUES(total_view_count),
                       total_video_count=VALUES(total_video_count)
-                """, (channel_id, datetime.now(timezone.utc),
+                """, (channel_id, datetime.now(KST),
                       r.subscriber_count, r.total_view_count, r.total_video_count))
 
                 if uc:
@@ -338,11 +344,15 @@ def main():
             FROM channels
             WHERE platform='youtube'
               AND channel_id_status <> 'duplicate'
+              AND channel_existence_status NOT IN ('deleted','suspended')
               AND channel_id NOT IN (
-                  SELECT channel_id FROM crawl_logs WHERE channel_id IS NOT NULL
+                  SELECT channel_id FROM crawl_logs
+                  WHERE layer='L1' AND status='success'
+                    AND channel_id IS NOT NULL
+                    AND attempted_at >= NOW() - INTERVAL %s DAY
               )
             ORDER BY channel_id
-        """)
+        """, (L1_REFRESH_DAYS,))
         channels = cur.fetchall()
     conn.close()
 

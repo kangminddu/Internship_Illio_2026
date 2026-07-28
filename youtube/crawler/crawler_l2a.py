@@ -22,6 +22,9 @@ import threading
 import pymysql
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
+
+KST = ZoneInfo("Asia/Seoul")
 
 from youtube.crawler.lib.youtube_parser import (
     get_session, extract_yt_initial_data, parse_l2_videos, parse_l2_shorts)
@@ -45,7 +48,10 @@ try:
 except ImportError:
     BACKOFF_BASE = 60
 MAX_429_RETRY = 3
-
+try:
+    from youtube.config import L2_REFRESH_DAYS
+except ImportError:
+    L2_REFRESH_DAYS = 7
 lock = threading.Lock()
 counter = {"done": 0, "ok": 0, "fail": 0, "rate_limited": 0, "db_error": 0}
 stop_flag = threading.Event()
@@ -55,19 +61,24 @@ rc = RateController(L2A_MIN_INTERVAL, BACKOFF_BASE,
 
 
 def classify_activity(conn, channel_id, now=None):
-    """DB contents 기준: 180일 내 10개↑ active / 365일 내 10개↑ low_active / 그 외 inactive"""
+    """DB contents 기준: 180일 10건↑ active / 365일 10건↑ low_active
+    / 마지막 업로드가 1년 이상 전이면 dormant / 그 외 inactive"""
     now = now or datetime.now()
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT SUM(published_at >= %s), SUM(published_at >= %s)
+            SELECT SUM(published_at >= %s), SUM(published_at >= %s),
+                   MAX(published_at)
             FROM contents
             WHERE channel_id = %s AND published_at IS NOT NULL
         """, (now - timedelta(days=180), now - timedelta(days=365), channel_id))
-        cnt_180d, cnt_365d = cur.fetchone()
+        cnt_180d, cnt_365d, last_pub = cur.fetchone()
     if (cnt_180d or 0) >= 10:
         return 'active'
     if (cnt_365d or 0) >= 10:
         return 'low_active'
+    # 가이드라인: 최근 1년 이상 업로드 없음 → 수집 대상 제외
+    if last_pub is not None and last_pub < now - timedelta(days=365):
+        return 'dormant'
     return 'inactive'
 
 
@@ -103,7 +114,7 @@ def save_channel(channel_id, crawl_url, videos, shorts, dur_ms):
     conn = pymysql.connect(**DB, autocommit=False)
     try:
         with conn.cursor() as cur:
-            now_utc = datetime.now(timezone.utc)
+            now_kst = datetime.now(KST)
             for kind, items in (("video", videos), ("shorts", shorts)):
                 for v in items:
                     if not v.get("video_id"):
@@ -135,7 +146,7 @@ def save_channel(channel_id, crawl_url, videos, shorts, dur_ms):
                           (content_id, captured_at, view_count)
                         VALUES (%s, %s, %s)
                         ON DUPLICATE KEY UPDATE view_count=VALUES(view_count)
-                    """, (row[0], now_utc, v.get("view_count")))
+                    """, (row[0], now_kst, v.get("view_count")))
 
             if videos or shorts:
                 activity = classify_activity(conn, channel_id)
@@ -253,9 +264,10 @@ def main():
               AND channel_id NOT IN (
                   SELECT channel_id FROM crawl_logs
                   WHERE layer='L2' AND status='success' AND channel_id IS NOT NULL
+                    AND attempted_at >= NOW() - INTERVAL %s DAY
               )
             ORDER BY channel_id
-        """)
+        """, (L2_REFRESH_DAYS,))
         channels = cur.fetchall()
     conn.close()
 
