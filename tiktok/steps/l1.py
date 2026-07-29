@@ -38,8 +38,9 @@ GOTO_RETRY = 2
 GOTO_RETRY_WAIT = 1.5
 
 DATA_WAIT_MS = 45000
-DATA_RETRY = 3
-DATA_RETRY_WAIT = 10.0
+DATA_RETRY = 1
+SERVER_ERROR_RETRY = 3
+DATA_RETRY_WAIT = 5.0
 
 SCRIPT_ID = "__UNIVERSAL_DATA_FOR_REHYDRATION__"
 SERVER_ERROR_TEXT = "Something went wrong"
@@ -114,7 +115,7 @@ async def fetch_html(page, url, debug=False):
 
     timed_out = await _wait_ready(page)
     html = await page.content()
-    if debug or timed_out:
+    if debug:
         kind = " [서버에러]" if SERVER_ERROR_TEXT in html else (
             " [타임아웃]" if timed_out else "")
         print(f"    [debug] HTML {len(html):,}자, "
@@ -123,10 +124,18 @@ async def fetch_html(page, url, debug=False):
 
 
 async def fetch_row(page, url, debug=False):
-    """fetch_html + parse. 실패 시 goto로 재시도.
-    반환 (row|None, html)"""
+    """fetch_html + parse. 실패 유형에 따라 재시도 횟수를 달리한다.
+
+    'Something went wrong'(약 102KB)은 틱톡 서버측 일시 실패로,
+    즉시 감지되므로(45초 타임아웃 없음) 여러 번 시도해도 비용이 작다.
+    반면 타임아웃 케이스는 시도마다 45초를 쓰므로 1회로 제한한다.
+
+    반환 (row|None, html)
+    """
     html = ""
-    for attempt in range(DATA_RETRY + 1):
+    attempt = 0
+    max_try = DATA_RETRY
+    while attempt <= max_try:
         html = await fetch_html(page, url, debug=debug)
         row = parser.parse_l1(html)
         if row is not None:
@@ -134,15 +143,12 @@ async def fetch_row(page, url, debug=False):
         # 스크립트가 채워졌는데 parse None = 계정 없음/비공개 → 재시도 무의미
         if SCRIPT_ID in html:
             return None, html
-        if attempt < DATA_RETRY:
+        # 서버 일시 에러면 재시도 여유를 더 준다
+        if SERVER_ERROR_TEXT in html:
+            max_try = SERVER_ERROR_RETRY
+        attempt += 1
+        if attempt <= max_try:
             await asyncio.sleep(DATA_RETRY_WAIT)
-
-    try:
-        handle = url.rstrip("/").split("/@")[-1]
-        with open(f"blocked_{handle}.html", "w", encoding="utf-8") as f:
-            f.write(html)
-    except Exception:
-        pass
     return None, html
 
 
@@ -219,7 +225,9 @@ def mark_not_found(worker_conn, channel_id):
 def fetch_targets(worker_conn, limit):
     sql = ("SELECT channel_id, channel_url_normalized FROM channels "
            "WHERE platform='tiktok' AND channel_id_status='handle_only' "
-           "AND channel_name IS NULL ORDER BY channel_id")
+           "AND channel_name IS NULL "
+           "AND channel_url_normalized LIKE '%%tiktok.com%%' "
+           "ORDER BY channel_id")
     if limit:
         sql += " LIMIT %d" % int(limit)
     with worker_conn.cursor() as cur:
@@ -415,7 +423,7 @@ async def run(channel=None, limit=None, **_):
                                 pass
                         # 채널 간 간격. 연속 요청은 프로필이 봇으로 마킹되는
                         # 속도를 높인다. (유튜브 rate_control에 해당하는 최소 장치)
-                        await asyncio.sleep(3)
+                        await asyncio.sleep(1)
             finally:
                 try:
                     conn.close()
