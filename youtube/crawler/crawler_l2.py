@@ -84,7 +84,9 @@ def fetch_one_video(video_id):
 
 
 def process_channel(channel):
-    channel_id, = channel
+    channel_id, activity = channel
+    is_dormant = (activity == 'dormant')
+    layer = 'L2b_shorts' if is_dormant else 'L2b'
     if stop_flag.is_set():
         return
 
@@ -92,12 +94,15 @@ def process_channel(channel):
         conn = pymysql.connect(**DB, autocommit=True)
         try:
             with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT content_id, external_id FROM contents
-                    WHERE channel_id=%s AND content_type='video'
-                    ORDER BY published_at DESC, content_id DESC LIMIT %s
-                """, (channel_id, RECENT_N))
-                videos = list(cur.fetchall())
+                # dormant는 쇼츠 게시일 보강만 — 롱폼은 건너뜀
+                videos = []
+                if not is_dormant:
+                    cur.execute("""
+                        SELECT content_id, external_id FROM contents
+                        WHERE channel_id=%s AND content_type='video'
+                        ORDER BY published_at DESC, content_id DESC LIMIT %s
+                    """, (channel_id, RECENT_N))
+                    videos = list(cur.fetchall())
                 cur.execute("""
                     SELECT content_id, external_id FROM contents
                     WHERE channel_id=%s AND content_type='shorts'
@@ -161,8 +166,8 @@ def process_channel(channel):
                 cur.execute("""
                     INSERT INTO crawl_logs
                       (channel_id, target_url, layer, status, http_status, duration_ms)
-                    VALUES (%s, %s, 'L2b', 'success', 200, NULL)
-                """, (channel_id, f"channel_{channel_id}"))
+                    VALUES (%s, %s, %s, 'success', 200, NULL)
+                """, (channel_id, f"channel_{channel_id}", layer))
                 with lock:
                     counter["ok"] += 1
         finally:
@@ -202,18 +207,21 @@ def main():
     with conn.cursor() as cur:
         # active 우선 처리 → 가치 높은 데이터부터 확보
         cur.execute("""
-            SELECT channel_id FROM channels
-            WHERE platform='youtube'
-              AND channel_activity_status IN ('active','low_active','inactive')
-              AND channel_id_status <> 'duplicate'
-              AND channel_id NOT IN (
-                  SELECT channel_id FROM crawl_logs
-                  WHERE layer='L2b' AND status='success' AND channel_id IS NOT NULL
-                    AND attempted_at >= NOW() - INTERVAL %s DAY
+            SELECT ch.channel_id, ch.channel_activity_status FROM channels ch
+            WHERE ch.platform='youtube'
+              AND ch.channel_activity_status IN ('active','low_active','inactive','dormant')
+              AND ch.channel_id_status <> 'duplicate'
+              AND NOT EXISTS (
+                  SELECT 1 FROM crawl_logs cl
+                  WHERE cl.channel_id = ch.channel_id
+                    AND cl.layer = IF(ch.channel_activity_status='dormant',
+                                      'L2b_shorts', 'L2b')
+                    AND cl.status='success'
+                    AND cl.attempted_at >= NOW() - INTERVAL %s DAY
               )
-            ORDER BY FIELD(channel_activity_status,
-                           'active','low_active','inactive'), channel_id
-        """, (L2_REFRESH_DAYS))
+            ORDER BY FIELD(ch.channel_activity_status,
+                           'active','low_active','inactive','dormant'), ch.channel_id
+        """, (L2_REFRESH_DAYS,))
         channels = cur.fetchall()
     conn.close()
 
