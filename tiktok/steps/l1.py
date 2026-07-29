@@ -26,14 +26,9 @@ LAUNCH_ARGS = [
 ]
 
 # L1은 HTML에 박힌 프로필 JSON만 필요 → 렌더링용 리소스는 전부 차단
-BLOCK_RESOURCE_TYPES = {"image", "media", "font", "stylesheet"}
+BLOCK_RESOURCE_TYPES = {"image", "media", "font"}
 
-BLOCK_URL_KEYWORDS = (
-    "analytics", "mon-va.", "log-va.", "/monitor_browser",
-    "doubleclick", "googletagmanager", "google-analytics",
-    "byteoversea.com/monitor",
-)
-
+BLOCK_URL_KEYWORDS = ()
 GOTO_RETRY = 2
 GOTO_RETRY_WAIT = 1.5
 
