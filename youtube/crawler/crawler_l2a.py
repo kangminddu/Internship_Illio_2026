@@ -61,22 +61,31 @@ rc = RateController(L2A_MIN_INTERVAL, BACKOFF_BASE,
 
 
 def classify_activity(conn, channel_id, now=None):
-    """DB contents 기준: 180일 10건↑ active / 365일 10건↑ low_active
-    / 마지막 업로드가 1년 이상 전이면 dormant / 그 외 inactive"""
+    """DB contents 기준 활동성 판정.
+
+    쇼츠는 목록 페이지에 날짜가 없어 L2a 시점에는 published_at이 NULL이다.
+    따라서 이 시점의 판정은 롱폼 기준 '잠정치'이며,
+    L2b가 쇼츠 게시일을 채운 뒤 backfill이 재판정해 확정한다.
+    """
     now = now or datetime.now()
     with conn.cursor() as cur:
         cur.execute("""
             SELECT SUM(published_at >= %s), SUM(published_at >= %s),
-                   MAX(published_at)
+                   MAX(published_at),
+                   SUM(content_type='shorts' AND published_at IS NULL)
             FROM contents
-            WHERE channel_id = %s AND published_at IS NOT NULL
+            WHERE channel_id = %s
         """, (now - timedelta(days=180), now - timedelta(days=365), channel_id))
-        cnt_180d, cnt_365d, last_pub = cur.fetchone()
+        cnt_180d, cnt_365d, last_pub, shorts_unknown = cur.fetchone()
+
     if (cnt_180d or 0) >= 10:
         return 'active'
     if (cnt_365d or 0) >= 10:
         return 'low_active'
-    # 가이드라인: 최근 1년 이상 업로드 없음 → 수집 대상 제외
+    # 게시일 미상 쇼츠가 10개 이상이면 dormant로 단정할 근거가 없다.
+    # (쇼츠만 올리는 채널을 '1년째 활동 없음'으로 오분류하는 것을 방지)
+    if (shorts_unknown or 0) >= 10:
+        return 'inactive'
     if last_pub is not None and last_pub < now - timedelta(days=365):
         return 'dormant'
     return 'inactive'
