@@ -9,7 +9,7 @@ from tiktok import config
 from tiktok import parser
 from tiktok.antibot import not_found
 from tiktok.antibot import stealth
-
+from tiktok.parser import parse_user_detail
 try:
     import pymysql
 except ImportError:
@@ -33,9 +33,9 @@ GOTO_RETRY = 2
 GOTO_RETRY_WAIT = 1.5
 
 DATA_WAIT_MS = 45000
-DATA_RETRY = 1
+DATA_RETRY = 5
 SERVER_ERROR_RETRY = 3
-DATA_RETRY_WAIT = 5.0
+DATA_RETRY_WAIT = 8.0
 
 SCRIPT_ID = "__UNIVERSAL_DATA_FOR_REHYDRATION__"
 SERVER_ERROR_TEXT = "Something went wrong"
@@ -119,33 +119,53 @@ async def fetch_html(page, url, debug=False):
 
 
 async def fetch_row(page, url, debug=False):
-    """fetch_html + parse. 실패 유형에 따라 재시도 횟수를 달리한다.
+    """HTML(SSR) 파싱 + /api/user/detail/ XHR(CSR) 가로채기 병행.
 
-    'Something went wrong'(약 102KB)은 틱톡 서버측 일시 실패로,
-    즉시 감지되므로(45초 타임아웃 없음) 여러 번 시도해도 비용이 작다.
-    반면 타임아웃 케이스는 시도마다 45초를 쓰므로 1회로 제한한다.
+    틱톡은 같은 URL이라도 요청마다 SSR/CSR을 다르게 내려준다.
+    SSR이면 __UNIVERSAL_DATA__ 스크립트에 데이터가 박혀 있지만,
+    CSR이면 HTML은 껍데기이고 데이터는 XHR로만 온다.
+    HTML만 보면 CSR 응답에서 전부 실패하므로 두 경로를 모두 본다.
 
     반환 (row|None, html)
     """
-    html = ""
-    attempt = 0
-    max_try = DATA_RETRY
-    while attempt <= max_try:
-        html = await fetch_html(page, url, debug=debug)
-        row = parser.parse_l1(html)
-        if row is not None:
-            return row, html
-        # 스크립트가 채워졌는데 parse None = 계정 없음/비공개 → 재시도 무의미
-        if SCRIPT_ID in html:
-            return None, html
-        # 서버 일시 에러면 재시도 여유를 더 준다
-        if SERVER_ERROR_TEXT in html:
-            max_try = SERVER_ERROR_RETRY
-        attempt += 1
-        if attempt <= max_try:
-            await asyncio.sleep(DATA_RETRY_WAIT)
-    return None, html
+    api_data = {}
 
+    def on_resp(resp):
+        if "/api/user/detail/" in resp.url:
+            asyncio.create_task(_grab(resp))
+
+    async def _grab(resp):
+        try:
+            api_data["json"] = await resp.json()
+        except Exception:
+            pass
+
+    page.on("response", on_resp)
+    try:
+        html = ""
+        for attempt in range(DATA_RETRY + 1):
+            html = await fetch_html(page, url, debug=debug)
+
+            # 1) SSR 경로
+            row = parser.parse_l1(html)
+            if row is not None:
+                return row, html
+
+            # 2) CSR 경로 — XHR 응답 사용
+            await asyncio.sleep(1)          # _grab 태스크 완료 대기
+            row = parse_user_detail(api_data.get("json"))
+            if row is not None:
+                if debug:
+                    print("    [debug] XHR /api/user/detail/ 로 파싱 성공")
+                return row, html
+
+            if SCRIPT_ID in html:
+                return None, html           # 계정 없음/비공개
+            if attempt < DATA_RETRY:
+                await asyncio.sleep(DATA_RETRY_WAIT)
+        return None, html
+    finally:
+        page.remove_listener("response", on_resp)
 
 UPDATE_CH = ("UPDATE channels SET channel_name=%s, bio=%s, external_link=%s, "
              "external_channel_id=%s WHERE channel_id=%s")
