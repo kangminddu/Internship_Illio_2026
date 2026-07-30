@@ -102,6 +102,21 @@ for col in ["크리에이터", "소속", "URL", "이메일", "이메일출처"]:
     df[col] = df[col].apply(sanitize_formula)
 
 filename = os.path.join(EXPORT_DIR, "L1_채널정보_최종.xlsx")
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
+
+def strip_illegal(v):
+    """엑셀이 허용하지 않는 제어문자 제거.
+
+    채널명·설명란에 \\x00~\\x1f 같은 제어문자가 섞여 들어오는 경우가 있다.
+    openpyxl은 이걸 IllegalCharacterError로 거부한다.
+    """
+    if isinstance(v, str):
+        return ILLEGAL_CHARACTERS_RE.sub("", v)
+    return v
+
+df = df.map(strip_illegal)          # pandas 2.1+
+# df = df.applymap(strip_illegal)   # pandas 2.0 이하면 이 줄로
+
 df.to_excel(filename, index=False, sheet_name="L1")
 
 # ----------------------------------------
