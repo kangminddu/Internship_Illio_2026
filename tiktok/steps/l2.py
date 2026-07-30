@@ -394,7 +394,20 @@ async def run(channel=None, limit=None, resume=True, **_):
     try:
         if channel:
             handle = channel.lstrip("@")
-            targets = [(handle, f"https://www.tiktok.com/@{handle}")]
+            url = f"https://www.tiktok.com/@{handle}"
+            # DB의 실제 channel_id를 찾아야 한다.
+            # (핸들 문자열을 그대로 쓰면 channel_id(bigint) INSERT에서 1366 에러)
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT channel_id FROM channels "
+                    "WHERE platform='tiktok' AND channel_url_normalized=%s",
+                    (url,))
+                row = cur.fetchone()
+            if not row:
+                raise SystemExit(
+                    f"DB에 없는 채널입니다: {url}\n"
+                    f"먼저 seed/L1을 실행하세요.")
+            targets = [(row[0], url)]
         else:
             targets = fetch_targets(conn, limit, resume)
         print("[L2] 대상 채널:", len(targets))
