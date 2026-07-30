@@ -48,14 +48,14 @@ crawler_l1.py, crawler_l2.py, crawler_l2a.py, crawler_l1_parallel.py 에서 공�
   항상 None으로 저장되던 버그 수정.
 """
 from zoneinfo import ZoneInfo
-import re
+import re # 정규 표현식
 import json
 import threading
 import requests
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
-from typing import Optional
+from typing import Optional # 값이 존재하지 않을 수 있는 변수 다룸
 
 
 # ─────────────────────────────────────────────────────────
