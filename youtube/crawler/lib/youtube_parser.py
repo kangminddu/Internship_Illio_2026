@@ -43,7 +43,8 @@ crawler_l1.py, crawler_l2.py, crawler_l2a.py, crawler_l1_parallel.py 에서 공�
 [수정 이력]
 - fetch_channel_l1 내부 429 재시도 제거: 429 처리는 crawler의 전역 백오프가 전담.
   (내부 2초/4초 3연발 재시도가 전역 rate limiter를 우회해 차단을 가속시키던 문제)
-- Session에 SOCS consent 쿠키 추가: 쿠키 없는 콜드 요청의 봇 판정 완화.
+- Session에 SOCS consent 쿠키 추가: 쿠키 없는 콜드 요청의 봇 판정 완화. 
+# SOCS 쿠키 = 웹사이트 쿠키 사용 동의 팝업 기억 저장파일
 - parse_joined_date에 영어 날짜 형식 추가: /about?hl=en 페이지에서 개설일이
   항상 None으로 저장되던 버그 수정.
 """
@@ -61,6 +62,7 @@ from typing import Optional # 값이 존재하지 않을 수 있는 변수 다�
 # ─────────────────────────────────────────────────────────
 # 설정
 # ─────────────────────────────────────────────────────────
+# user agent = 웹 브라우저, 운영체제, 기기 정보 등 사용자의 소프트웨어 환경을 웹 서버에 알려주는 식별 데이터
 # 기본 User-Agent("python-requests/2.31.0")를 그대로 쓰면 즉시 차단된다.
 # 실제 Chrome 헤더를 흉내낸다.
 HEADERS = {
