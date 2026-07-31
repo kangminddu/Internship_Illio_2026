@@ -90,7 +90,10 @@ stop_flag = threading.Event()
 
 class GlobalRateLimiter:
     """워커 수와 무관하게 'IP 기준' 요청 속도를 고정하는 장치.
-
+    worker1 1.2초 -> worker2 1.2초 -> 동시에 요청 -> 429 
+    GlobalRateLimiter는 worker가 몇개든 요청은 1.2초 1.2초 1.2초 순서대로 나간다. 
+    즉, Worker는 병렬 http 요청은 직렬이다.
+    
     유튜브는 세 가지를 본다고 가정하고 각각에 대응했다:
       1) 초당 요청 수      → min_interval + jitter
       2) 차단 후 재시도    → 429 지수 백오프 (전 워커 공동 정지)
@@ -256,6 +259,12 @@ def save_result(channel_id, creator_id, crawl_url, r, dur_ms):
       또 죽으면 또 시도 → 무한 루프. 데이터는 쌓이는데 진행은 안 된다.
       전부 들어가거나 전부 안 들어가게 해야 이 상태가 안 생긴다.
     """
+    """
+    Transaction으로 묶은 이유:
+    Snapshot만 저장되고 log는 저장되지 않는 반쪽 상태를 방지하기 위해서
+    모두 성공해야 commit하고 실패하면 rollback
+    """
+    
     conn = pymysql.connect(**DB, autocommit=False)   # ← 명시적 트랜잭션
     try:
         with conn.cursor() as cur:

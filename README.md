@@ -108,7 +108,6 @@ fandom_crm
 | content_snapshots | 조회수 스냅샷 |
 | crawl_logs | 수집 로그 |
 
-자세한 구조는 `db/README.md`를 참고하세요.
 
 ---
 
@@ -160,12 +159,3 @@ python main.py
 ```
 
 ---
-
-# Documentation
-
-각 플랫폼의 자세한 설명은 아래 문서를 참고하세요.
-
-- youtube/README.md
-- instagram/README.md
-- tiktok/README.md
-- db/README.md
